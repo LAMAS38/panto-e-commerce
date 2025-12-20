@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { ChevronLeft, ShoppingBag, Check } from 'lucide-react'
+import { ShoppingBag, Check } from 'lucide-react'
+import { useCart } from '../../context/CartContext'
+import { Navbar } from '../../components/Navbar'
 import type { Product } from '@/payload-types'
 
 interface ProductDetailClientProps {
@@ -11,6 +13,8 @@ interface ProductDetailClientProps {
 }
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
+  const router = useRouter()
+  const { addItem } = useCart()
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
 
@@ -31,26 +35,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const category = typeof product.category === 'object' ? product.category.title : 'Product'
 
   const handleAddToCart = () => {
-    // TODO: Implémenter le vrai panier
-    console.log('Add to cart:', { product: product.slug, quantity })
+    addItem(product, quantity)
     setAddedToCart(true)
     setTimeout(() => setAddedToCart(false), 2000)
   }
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            Back to Products
-          </Link>
-        </div>
-      </div>
+      <Navbar />
 
       {/* Product Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -149,22 +141,35 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             </div>
 
             {/* Add to Cart Button */}
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-gray-900 text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-            >
-              {addedToCart ? (
-                <>
-                  <Check className="w-5 h-5" />
-                  Added to Cart!
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-5 h-5" />
-                  Add to Cart
-                </>
-              )}
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={handleAddToCart}
+                className={`w-full py-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
+                  addedToCart
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                }`}
+              >
+                {addedToCart ? (
+                  <>
+                    <Check className="w-5 h-5" />
+                    Added to Cart!
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-5 h-5" />
+                    Add to Cart
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => router.push('/cart')}
+                className="w-full py-4 rounded-lg font-semibold bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                View Cart
+              </button>
+            </div>
 
             {/* Product Features */}
             <div className="mt-8 pt-8 border-t">

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getProducts, getCategories } from '@/lib/payload'
-import ProductCard from '../components/ProductCard'
+import { Navbar } from '../components/Navbar'
+import ProductCardWithCart from './ProductCardWithCart'
 
 interface ProductsPageProps {
   searchParams: Promise<{ category?: string }>
@@ -24,24 +25,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* Header simple */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              Panto
-            </Link>
-            <nav className="flex gap-6 text-sm">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                Home
-              </Link>
-              <Link href="/products" className="text-gray-900 font-semibold">
-                Products
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </div>
+      <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* En-tête */}
@@ -85,7 +69,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCardWithCart key={product.id} product={product} />
             ))}
           </div>
         ) : (

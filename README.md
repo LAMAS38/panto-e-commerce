@@ -1,67 +1,186 @@
-# Payload Blank Template
+# 🛋️ Panto - Premium Furniture E-commerce
 
-This template comes configured with the bare minimum to get started on anything you need.
+A modern, full-stack e-commerce platform built with Next.js 15, Payload CMS, and PostgreSQL.
 
-## Quick start
+![Next.js](https://img.shields.io/badge/Next.js-15.4-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)
+![Payload CMS](https://img.shields.io/badge/Payload%20CMS-3.69-orange)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-38bdf8?logo=tailwindcss)
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## ✨ Features
 
-## Quick Start - local setup
+### 🎨 **Frontend**
+- **Modern Design** - Clean, minimalist Panto-inspired UI
+- **Responsive** - Mobile-first design with Tailwind CSS
+- **Product Catalog** - Browse furniture by category (Chairs, Sofas, Lamps, Beds)
+- **Shopping Cart** - Add to cart with localStorage persistence
+- **Product Details** - High-quality images, descriptions, and pricing
+- **Sticky Navigation** - Always accessible header with cart counter
 
-To spin up this template locally, follow these steps:
+### 🔧 **Backend (Payload CMS)**
+- **Headless CMS** - Self-hosted admin panel
+- **Collections**: Products, Categories, Orders, Customers, Media
+- **PostgreSQL** - Production-ready database (Neon)
+- **Image Upload** - Built-in media management
+- **Authentication** - Secure admin and customer auth
 
-### Clone
+### 🛒 **E-commerce**
+- **Cart Management** - Add, remove, update quantities
+- **Real-time Updates** - Cart counter updates instantly
+- **Price Calculations** - Automatic subtotal, tax, and total
+- **Discount Badges** - Show savings on products
+- **Featured Products** - Highlight bestsellers
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+## 🚀 Tech Stack
 
-### Development
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **CMS**: [Payload CMS 3.69](https://payloadcms.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) (Neon)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Deployment**: [Vercel](https://vercel.com/)
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+## 📦 Installation
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+### Prerequisites
+- Node.js 18.20+ or 20.9+
+- npm or pnpm
+- PostgreSQL database (Neon recommended)
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### Setup
 
-#### Docker (Optional)
+1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd panto-ecommerce
+```
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-To do so, follow these steps:
+3. **Configure environment variables**
+```bash
+cp .env.example .env
+```
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+Edit `.env`:
+```env
+DATABASE_URL=postgresql://your-neon-connection-string
+PAYLOAD_SECRET=your-secret-key-here
+```
 
-## How it works
+4. **Run database migrations**
+```bash
+npm run payload -- migrate:fresh
+```
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+5. **Seed the database** (optional)
+```bash
+npm run seed
+```
+
+6. **Start development server**
+```bash
+npm run dev
+```
+
+7. **Open in browser**
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Admin: [http://localhost:3000/admin](http://localhost:3000/admin)
+
+## 📁 Project Structure
+
+```
+panto-ecommerce/
+├── src/
+│   ├── app/
+│   │   ├── (frontend)/          # Public-facing pages
+│   │   │   ├── components/      # React components
+│   │   │   ├── context/         # React Context (Cart)
+│   │   │   ├── products/        # Product pages
+│   │   │   ├── cart/            # Shopping cart
+│   │   │   └── page.tsx         # Homepage
+│   │   └── (payload)/           # Payload admin
+│   ├── collections/             # Payload collections
+│   ├── lib/                     # Utility functions
+│   └── scripts/                 # Seed scripts
+├── public/                      # Static assets
+└── package.json
+```
+
+## 🗄️ Database Schema
 
 ### Collections
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+- **Products** - Furniture items with images, pricing, and categories
+- **Categories** - Product categorization (Chair, Sofa, Lamp, Bed)
+- **Orders** - Customer orders with line items
+- **Customers** - User accounts with auth
+- **Media** - Image uploads and management
+- **Users** - Admin users
 
-- #### Users (Authentication)
+## 🎨 Design Highlights
 
-  Users are auth-enabled collections that have access to the admin panel.
+- **Hero Section** - Full-width background with search
+- **Product Grid** - 4-column responsive layout
+- **Category Filters** - Quick filtering by type
+- **Cart Badge** - Real-time item count
+- **Discount Badges** - Visual savings indicators
+- **Sticky Header** - Always accessible navigation
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+## 🧪 Scripts
 
-- #### Media
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run seed` | Populate database with sample data |
+| `npm run payload -- migrate:fresh` | Reset database |
+| `npm run generate:types` | Generate TypeScript types |
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+## 🚢 Deployment
 
-### Docker
+### Vercel (Recommended)
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+1. Push to GitHub
+2. Import project on [Vercel](https://vercel.com)
+3. Add environment variables
+4. Deploy!
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+### Environment Variables for Production
+```env
+DATABASE_URL=your-neon-postgres-url
+PAYLOAD_SECRET=secure-random-string
+NEXT_PUBLIC_SERVER_URL=https://yourdomain.com
+```
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+## 📝 TODO / Roadmap
 
-## Questions
+- [ ] Stripe integration for payments
+- [ ] User authentication (customer login)
+- [ ] Order history for customers
+- [ ] Product search functionality
+- [ ] Reviews and ratings
+- [ ] Email notifications
+- [ ] Inventory management
+- [ ] Analytics dashboard
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+MIT License - feel free to use this project for learning or portfolio purposes.
+
+## 👤 Author
+
+Built by [Your Name] as a portfolio project demonstrating full-stack e-commerce development with modern web technologies.
+
+---
+
+**⭐ If you found this project helpful, please consider giving it a star!**

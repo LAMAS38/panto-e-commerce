@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useCart } from '../context/CartContext'
 import type { Product } from '@/payload-types'
 
 const tabs = ['Chair', 'Beds', 'Sofa', 'Lamp'] as const
@@ -13,6 +13,8 @@ interface BestSellingProps {
 }
 
 export function BestSelling({ products }: BestSellingProps) {
+  const { addItem } = useCart()
+
   return (
     <section className="bg-white/60 py-16">
       <div className="mx-auto w-full max-w-6xl px-4">
@@ -47,7 +49,7 @@ export function BestSelling({ products }: BestSellingProps) {
               // Extraire l'image
               const firstImage = product.images?.[0]
               const imageData = typeof firstImage?.image === 'object' ? firstImage.image : null
-              const imageUrl = imageData?.url || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?q=80&w=800&auto=format&fit=crop'
+              const imageUrl = imageData?.url || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
               
               // Catégorie
               const category = typeof product.category === 'object' ? product.category.title : 'Product'
@@ -78,8 +80,7 @@ export function BestSelling({ products }: BestSellingProps) {
                           className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-white transition-opacity hover:opacity-90"
                           onClick={(e) => {
                             e.preventDefault()
-                            // TODO: Ajouter au panier
-                            alert(`Adding ${product.title} to cart!`)
+                            addItem(product, 1)
                           }}
                         >
                           <Plus className="h-5 w-5" />
