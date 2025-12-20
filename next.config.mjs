@@ -2,7 +2,31 @@ import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Your Next.js config here
+  // Configuration des images
+  images: {
+    remotePatterns: [
+      // Images Unsplash (pour Hero, Experience, Testimonials, etc.)
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'source.unsplash.com',
+      },
+      // Images Picsum (pour les produits du seed)
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      // Pour les images Payload locales
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
+  },
+  
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

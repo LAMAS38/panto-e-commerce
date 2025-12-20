@@ -24,14 +24,17 @@ export const Products: CollectionConfig = {
     },
     {
       name: 'status',
+      label: 'Status',
       type: 'select',
       required: true,
-      defaultValue: 'active',
+      defaultValue: 'draft',
       options: [
-        { label: 'Active', value: 'active' },
         { label: 'Draft', value: 'draft' },
-        { label: 'Archived', value: 'archived' },
+        { label: 'Published', value: 'published' },
       ],
+      admin: {
+        position: 'sidebar',
+      },
     },
     {
       name: 'category',

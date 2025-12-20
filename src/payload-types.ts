@@ -209,7 +209,7 @@ export interface Product {
   id: number;
   title: string;
   slug: string;
-  status: 'active' | 'draft' | 'archived';
+  status: 'draft' | 'published';
   category: number | Category;
   price: number;
   compareAtPrice?: number | null;

@@ -1,24 +1,25 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
-import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
-
-import config from '@/payload.config'
-import './styles.css'
+import { Navbar } from './components/Navbar'
+import { Hero } from './components/Hero'
+import { WhyChoosingUs } from './components/WhyChoosingUs'
+import { BestSelling } from './components/BestSelling'
+import { ExperienceAndMaterials } from './components/ExperienceAndMaterials'
+import { Testimonials } from './components/Testimonials'
+import { Footer } from './components/Footer'
+import { getFeaturedProducts } from '@/lib/payload'
 
 export default async function HomePage() {
-  const headers = await getHeaders()
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
-
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  // Fetch products côté serveur
+  const featuredProducts = await getFeaturedProducts()
 
   return (
-  <main className="min-h-screen flex items-center justify-center bg-gray-50">
-    <h1 className="text-5xl font-bold text-blue-600">Tailwind OK ✅</h1>
-  </main>
-)
-
+    <>
+      <Navbar />
+      <Hero />
+      <WhyChoosingUs />
+      <BestSelling products={featuredProducts} />  {/* ← ICI */}
+      <ExperienceAndMaterials />
+      <Testimonials />
+      <Footer />
+    </>
+  )
 }
