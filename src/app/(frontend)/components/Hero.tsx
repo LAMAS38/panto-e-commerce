@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchBar } from './SearchBar'
 
 export function Hero() {
   return (
@@ -26,21 +26,9 @@ export function Hero() {
           Turn your room with panto into a lot more minimalist and modern with ease and speed
         </p>
 
-        {/* Search */}
-        <div className="mt-10 flex w-full max-w-lg items-center gap-2 rounded-full bg-white/20 p-2 backdrop-blur">
-          <input
-            placeholder="Search furniture"
-            className="w-full bg-transparent px-4 py-3 text-sm outline-none placeholder:text-white/70"
-          />
-          <button
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-orange-500 hover:opacity-90"
-            aria-label="Search"
-          >
-            <Search className="h-5 w-5" />
-          </button>
-        </div>
+        {/* Search - Fonctionnelle */}
+        <SearchBar variant="hero" />
       </div>
     </section>
-
   )
 }

@@ -23,6 +23,7 @@
     "@payloadcms/next": "3.69.0",
     "@payloadcms/richtext-lexical": "3.69.0",
     "@payloadcms/ui": "3.69.0",
+    "@stripe/stripe-js": "^8.6.0",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
@@ -31,7 +32,8 @@
     "payload": "3.69.0",
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "sharp": "0.34.2"
+    "sharp": "0.34.2",
+    "stripe": "^20.1.0"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
