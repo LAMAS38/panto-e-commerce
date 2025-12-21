@@ -28,6 +28,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
       },  
+      { 
+        protocol: 'https', 
+        hostname: 'panto-e-commerce.vercel.app' 
+      },
     ],
   },
   

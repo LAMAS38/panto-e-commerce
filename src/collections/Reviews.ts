@@ -4,14 +4,30 @@ export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'role', 'rating', 'featured', 'published', 'order'],
+    defaultColumns: ['name', 'rating', 'published'],
   },
   access: {
-    read: () => true, // public
+    read: () => true,
   },
   fields: [
-    { name: 'name', type: 'text', required: true },
-    { name: 'role', type: 'text', required: true },
+    {
+      name: 'name',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'slug SEO (ex: bang-upin)',
+      },
+    },
+    {
+      name: 'role',
+      type: 'text',
+    },
     {
       name: 'quote',
       type: 'textarea',
@@ -20,7 +36,6 @@ export const Reviews: CollectionConfig = {
     {
       name: 'rating',
       type: 'number',
-      required: true,
       min: 1,
       max: 5,
       defaultValue: 5,
@@ -41,10 +56,6 @@ export const Reviews: CollectionConfig = {
       type: 'checkbox',
       defaultValue: true,
     },
-    {
-      name: 'order',
-      type: 'number',
-      defaultValue: 0,
-    },
   ],
 }
+

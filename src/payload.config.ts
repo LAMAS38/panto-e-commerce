@@ -12,7 +12,7 @@ import { Categories } from './collections/Categories'
 import { Products } from './collections/Products'
 import { Customers } from './collections/Customers'
 import { Orders } from './collections/Orders'
-// import { Reviews } from './collections/Reviews'
+import { Reviews } from './collections/Reviews'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,7 +24,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Categories, Products, Customers, Orders],
+  collections: [Users, Media, Categories, Products, Customers, Orders, Reviews],
   plugins: [
     vercelBlobStorage({
       collections: {
