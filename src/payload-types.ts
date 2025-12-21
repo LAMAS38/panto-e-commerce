@@ -241,6 +241,10 @@ export interface Product {
       }[]
     | null;
   featured?: boolean | null;
+  /**
+   * Note moyenne (0 à 5) affichée sur les cartes
+   */
+  rating?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -519,6 +523,7 @@ export interface ProductsSelect<T extends boolean = true> {
         id?: T;
       };
   featured?: T;
+  rating?: T;
   updatedAt?: T;
   createdAt?: T;
 }

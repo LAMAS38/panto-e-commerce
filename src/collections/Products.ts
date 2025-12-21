@@ -75,5 +75,16 @@ export const Products: CollectionConfig = {
       type: 'checkbox',
       defaultValue: false,
     },
+    {
+      name: 'rating',
+      type: 'number',
+      min: 0,
+      max: 5,
+      admin: {
+        description: 'Note moyenne (0 à 5) affichée sur les cartes',
+      },
+      defaultValue: 5,
+    }
+
   ],
 }
