@@ -1,12 +1,49 @@
 'use client'
 
+import { useState } from 'react'
 import { useCart } from '../context/CartContext'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Trash2, ShoppingBag, ArrowLeft } from 'lucide-react'
+import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react'
+import { loadStripe } from '@stripe/stripe-js'
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleCheckout = async () => {
+    setIsLoading(true)
+
+    try {
+      // Appeler l'API pour créer la session Stripe
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items }),
+      })
+
+      const { url, error } = await response.json()
+
+      if (error) {
+        throw new Error(error)
+      }
+
+      if (!url) {
+        throw new Error('No checkout URL returned')
+      }
+      window.location.href = url
+
+    } catch (error: any) {
+      console.error('Checkout error:', error)
+      alert('Payment failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -169,11 +206,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span className="font-semibold">Free</span>
+                  <span className="font-semibold">Calculated at checkout</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax</span>
-                  <span className="font-semibold">$0.00</span>
+                  <span className="font-semibold">Calculated at checkout</span>
                 </div>
               </div>
 
@@ -183,8 +220,23 @@ export default function CartPage() {
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
 
-                <button className="w-full bg-gray-900 text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  Proceed to Checkout
+                {/* Stripe Checkout Button */}
+                <button 
+                  onClick={handleCheckout}
+                  disabled={isLoading}
+                  className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-5 h-5" />
+                      Proceed to Checkout
+                    </>
+                  )}
                 </button>
               </div>
 
