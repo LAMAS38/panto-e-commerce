@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const _stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart()
@@ -37,7 +37,7 @@ export default function CartPage() {
       }
       window.location.href = url
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Checkout error:', error)
       alert('Payment failed. Please try again.')
     } finally {

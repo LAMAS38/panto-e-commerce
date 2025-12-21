@@ -18,6 +18,19 @@ interface BestSellingProps {
   products: Product[]
 }
 
+function toAbsoluteUrl(url?: string | null) {
+  if (!url) return null
+  if (url.startsWith('http')) return url
+
+  // En prod: utilise NEXT_PUBLIC_SERVER_URL (https://ton-site.vercel.app)
+  const base =
+    process.env.NEXT_PUBLIC_SERVER_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : '')
+
+  return `${base}${url}`
+}
+
+
 export function BestSelling({ products }: BestSellingProps) {
   const { addItem } = useCart()
   const [selectedTab, setSelectedTab] = useState<string | null>(null)
@@ -108,7 +121,11 @@ export function BestSelling({ products }: BestSellingProps) {
                 // Extraire l'image
                 const firstImage = product.images?.[0]
                 const imageData = typeof firstImage?.image === 'object' ? firstImage.image : null
-                const imageUrl = imageData?.url || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
+
+                const rawUrl = imageData?.url || null
+
+                const imageUrl =
+                  toAbsoluteUrl(rawUrl) || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
                 
                 // Catégorie
                 const category = typeof product.category === 'object' ? product.category.title : 'Product'

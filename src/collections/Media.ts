@@ -2,8 +2,22 @@ import type { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  access: {
-    read: () => true,
+  access: { read: () => true },
+  upload: {
+    imageSizes: [
+      {
+        name: 'thumbnail',
+        width: 300,
+        height: 300,
+        crop: 'center',
+      },
+      {
+        name: 'card',
+        width: 800,
+        height: 800,
+        crop: 'center',
+      },
+    ],
   },
   fields: [
     {
@@ -12,5 +26,4 @@ export const Media: CollectionConfig = {
       required: true,
     },
   ],
-  upload: true,
 }
