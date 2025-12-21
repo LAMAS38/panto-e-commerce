@@ -7,17 +7,45 @@ export async function POST(request: NextRequest) {
   try {
     const { items } = await request.json()
 
-    // Créer les line items pour Stripe
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: 'usd',
-        product_data: {
-          description: item.product.description || '',
+    if (!Array.isArray(items) || items.length === 0) {
+    return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+
+    const lineItems = items
+    .filter((item: any) => item?.product && item?.quantity > 0)
+    .map((item: any) => {
+        const title = item?.product?.title || item?.product?.name || 'Product'
+        const rawImageUrl = item?.product?.images?.[0]?.image?.url
+
+        const fullImageUrl =
+        rawImageUrl && rawImageUrl.startsWith('http')
+            ? rawImageUrl
+            : rawImageUrl
+            ? `${baseUrl}${rawImageUrl}`
+            : null
+
+        return {
+        price_data: {
+            currency: 'usd',
+            product_data: {
+            name: title,
+            ...(fullImageUrl && /^https?:\/\//.test(fullImageUrl)
+                ? { images: [fullImageUrl] }
+                : {}),
+            description: item?.product?.description || '',
+            },
+            unit_amount: Math.round(Number(item?.product?.price || 0) * 100),
         },
-        unit_amount: Math.round(item.product.price * 100), // Stripe utilise les centimes
-      },
-      quantity: item.quantity,
-    }))
+        quantity: item.quantity,
+        }
+    })
+
+    if (lineItems.length === 0) {
+    return NextResponse.json({ error: 'No valid items to checkout' }, { status: 400 })
+    }
+
 
     // Créer la session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
