@@ -310,16 +310,15 @@ export interface Order {
 export interface Review {
   id: number;
   name: string;
-  /**
-   * slug SEO (ex: bang-upin)
-   */
   slug: string;
-  role?: string | null;
+  role: string;
   quote: string;
-  rating?: number | null;
-  photo: number | Media;
+  rating: number;
   featured?: boolean | null;
   published?: boolean | null;
+  background: number | Media;
+  avatar: number | Media;
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -593,9 +592,11 @@ export interface ReviewsSelect<T extends boolean = true> {
   role?: T;
   quote?: T;
   rating?: T;
-  photo?: T;
   featured?: T;
   published?: T;
+  background?: T;
+  avatar?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

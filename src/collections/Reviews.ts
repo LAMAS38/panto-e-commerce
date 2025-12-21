@@ -4,7 +4,7 @@ export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'rating', 'published'],
+    defaultColumns: ['name', 'rating', 'published', 'featured'],
   },
   access: {
     read: () => true,
@@ -20,13 +20,12 @@ export const Reviews: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
-      admin: {
-        description: 'slug SEO (ex: bang-upin)',
-      },
+      admin: { position: 'sidebar' },
     },
     {
       name: 'role',
       type: 'text',
+      required: true,
     },
     {
       name: 'quote',
@@ -36,26 +35,45 @@ export const Reviews: CollectionConfig = {
     {
       name: 'rating',
       type: 'number',
+      required: true,
       min: 1,
       max: 5,
-      defaultValue: 5,
-    },
-    {
-      name: 'photo',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
     },
     {
       name: 'featured',
       type: 'checkbox',
       defaultValue: true,
+      admin: { position: 'sidebar' },
     },
     {
       name: 'published',
       type: 'checkbox',
       defaultValue: true,
+      admin: { position: 'sidebar' },
+    },
+
+    // ✅ grande image derrière (comme fig1)
+    {
+      name: 'background',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+
+    // ✅ petit avatar sur la carte
+    {
+      name: 'avatar',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+
+    // optionnel mais “pro”: pour l’ordre
+    {
+      name: 'order',
+      type: 'number',
+      defaultValue: 0,
+      admin: { position: 'sidebar' },
     },
   ],
 }
-

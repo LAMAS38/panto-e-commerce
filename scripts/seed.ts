@@ -7,7 +7,7 @@ type ID = number
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 async function fetchWithRetry(url: string, tries = 3) {
-  let lastErr: unknown = null
+  let lastErr: any = null
 
   for (let i = 0; i < tries; i++) {
     try {
@@ -97,6 +97,15 @@ async function upsertMedia(payload: any, alt: string, imageURL: string, filename
     console.warn(`⚠️ Image fetch failed for "${alt}": ${e?.message}`)
     return null
   }
+}
+
+function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
 }
 
 async function main() {
@@ -228,97 +237,114 @@ async function main() {
   }
 
   // -----------------------
-  // Reviews (NEW)
+  // Reviews (6) ✅
   // -----------------------
-  console.log('\n⭐ Creating reviews...')
+  console.log('\n💬 Creating reviews...')
 
   const reviews = [
     {
-      name: 'Bang Upin',
-      slug: 'bang-upin',
-      role: 'Interior Designer',
-      quote: 'The sofa quality is insane. My living room looks like a showroom.',
-      rating: 5,
-      order: 1,
-      photoURL:
-        'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=800&auto=format&fit=crop',
-    },
-    {
-      name: 'Ibu Susi',
-      slug: 'ibu-susi',
-      role: 'Home Owner',
-      quote: 'Fast delivery, premium finish. I’m genuinely impressed.',
-      rating: 5,
-      order: 2,
-      photoURL:
-        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&auto=format&fit=crop',
-    },
-    {
-      name: 'Mpok Ina',
-      slug: 'mpok-ina',
-      role: 'Architect',
-      quote: 'Minimalist design, solid materials. Exactly my style.',
-      rating: 5,
-      order: 3,
-      photoURL:
-        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&auto=format&fit=crop',
-    },
-    {
-      name: 'Layla M.',
-      slug: 'layla-m',
-      role: 'Product Manager',
-      quote: 'Packaging and details were on point. Feels expensive.',
-      rating: 5,
-      order: 4,
-      photoURL:
-        'https://images.unsplash.com/photo-1525134479668-1bee5c7c6845?w=800&auto=format&fit=crop',
-    },
-    {
-      name: 'Karim A.',
-      slug: 'karim-a',
-      role: 'Developer',
-      quote: 'Simple, clean experience. The chair is insanely comfy.',
-      rating: 4,
-      order: 5,
-      photoURL:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop',
-    },
-    {
       name: 'Sofia R.',
-      slug: 'sofia-r',
       role: 'Stylist',
       quote: 'The lamp looks like a magazine piece. Love it.',
       rating: 5,
+      order: 1,
+      bg:
+        'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&auto=format&fit=crop',
+    },
+    {
+      name: 'Karim A.',
+      role: 'Developer',
+      quote: 'Simple, clean experience. The chair is insanely comfy.',
+      rating: 5,
+      order: 2,
+      bg:
+        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&auto=format&fit=crop',
+    },
+    {
+      name: 'Layla M.',
+      role: 'Product Manager',
+      quote: 'Packaging and details were on point. Feels expensive.',
+      rating: 5,
+      order: 3,
+      bg:
+        'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=400&auto=format&fit=crop',
+    },
+    {
+      name: 'Jean P.',
+      role: 'Architect',
+      quote: 'Minimal, premium vibe. My living room upgraded instantly.',
+      rating: 5,
+      order: 4,
+      bg:
+        'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1552058544-f2b08422138a?w=400&auto=format&fit=crop',
+    },
+    {
+      name: 'Mina K.',
+      role: 'Marketing',
+      quote: 'Looks even better in real life. Delivery was fast.',
+      rating: 4,
+      order: 5,
+      bg:
+        'https://images.unsplash.com/photo-1549497538-303791108f95?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop',
+    },
+    {
+      name: 'Omar T.',
+      role: 'Consultant',
+      quote: 'Great quality for the price. Clean UI and smooth checkout.',
+      rating: 5,
       order: 6,
-      photoURL:
-        'https://images.unsplash.com/photo-1524502397800-2eeaad7c3fe5?w=800&auto=format&fit=crop',
+      bg:
+        'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&auto=format&fit=crop',
+      avatar:
+        'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400&auto=format&fit=crop',
     },
   ] as const
 
   for (const r of reviews) {
-    const alt = `${r.name} - Review Photo`
-    const filename = `review-${r.slug}.jpg`
+    const slug = slugify(r.name)
 
-    const mediaDoc = await upsertMedia(payload, alt, r.photoURL, filename)
+    const bgMedia = await upsertMedia(
+      payload,
+      `${r.name} - Review Background`,
+      r.bg,
+      `review-bg-${slug}.jpg`,
+    )
 
-    if (!mediaDoc?.id) {
-      console.warn(`⚠️ Skipping review "${r.slug}" (photo upload failed)`)
+    const avatarMedia = await upsertMedia(
+      payload,
+      `${r.name} - Review Avatar`,
+      r.avatar,
+      `review-avatar-${slug}.jpg`,
+    )
+
+    if (!bgMedia?.id || !avatarMedia?.id) {
+      console.warn(`⚠️ Skip review "${r.name}" because media upload failed`)
       continue
     }
 
-    const reviewData = {
+    await upsertBySlug(payload, 'reviews', slug, {
       name: r.name,
-      slug: r.slug,
+      slug,
       role: r.role,
       quote: r.quote,
       rating: r.rating,
-      order: r.order,
       featured: true,
       published: true,
-      photo: Number(mediaDoc.id),
-    }
+      order: r.order,
+      background: Number(bgMedia.id),
+      avatar: Number(avatarMedia.id),
+    })
 
-    await upsertBySlug(payload, 'reviews', r.slug, reviewData)
     console.log(`  ✓ ${r.name}`)
   }
 
