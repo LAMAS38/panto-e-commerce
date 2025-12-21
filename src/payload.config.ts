@@ -24,6 +24,14 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Categories, Products, Customers, Orders],
+  plugins: [
+    vercelBlobStorage({
+      collections: {
+        media: true, 
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN!,
+    }),
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -35,12 +43,4 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [
-      vercelBlobStorage({
-        collections: {
-          media: true,
-        },
-        token: process.env.BLOB_READ_WRITE_TOKEN!,
-      }),
-  ],
 })
