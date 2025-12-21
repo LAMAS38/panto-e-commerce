@@ -26,8 +26,8 @@ export function Hero() {
           Turn your room with panto into a lot more minimalist and modern with ease and speed
         </p>
 
-        {/* Search - Fonctionnelle */}
-        <SearchBar variant="hero" />
+        {/* Search - Sans variant */}
+        <SearchBar />
       </div>
     </section>
   )

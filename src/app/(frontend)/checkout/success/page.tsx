@@ -9,16 +9,24 @@ import { useCart } from '../../context/CartContext'
 export default function SuccessPage() {
   const searchParams = useSearchParams()
   const { clearCart } = useCart()
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const [orderNumber] = useState(() => Math.floor(100000 + Math.random() * 900000))
+  const [isCleared, setIsCleared] = useState(false)
+  
+  // Générer orderNumber côté client uniquement
+  const [orderNumber, setOrderNumber] = useState<number | null>(null)
 
   useEffect(() => {
-    const id = searchParams.get('session_id')
-    setSessionId(id)
-    if (id) {
-      clearCart()
+    // Générer le numéro de commande une seule fois
+    if (!orderNumber) {
+      setOrderNumber(Math.floor(100000 + Math.random() * 900000))
     }
-  }, [searchParams, clearCart])
+
+    // Vider le panier une seule fois
+    const sessionId = searchParams.get('session_id')
+    if (sessionId && !isCleared) {
+      clearCart()
+      setIsCleared(true)
+    }
+  }, [searchParams, orderNumber, isCleared, clearCart])
 
   return (
     <div className="min-h-screen bg-zinc-50 flex items-center justify-center px-4">
@@ -43,7 +51,7 @@ export default function SuccessPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <Package className="w-6 h-6 text-orange-500" />
               <p className="text-lg font-semibold text-gray-900">
-                Order #{orderNumber}
+                {orderNumber ? `Order #${orderNumber}` : 'Processing...'}
               </p>
             </div>
             <p className="text-sm text-gray-600">
@@ -69,9 +77,9 @@ export default function SuccessPage() {
           </div>
 
           {/* Session ID for debugging */}
-          {sessionId && (
+          {searchParams.get('session_id') && (
             <p className="text-xs text-gray-400 mt-8">
-              Session ID: {sessionId}
+              Session ID: {searchParams.get('session_id')}
             </p>
           )}
         </div>

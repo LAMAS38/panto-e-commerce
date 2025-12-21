@@ -18,25 +18,11 @@ interface BestSellingProps {
   products: Product[]
 }
 
-function toAbsoluteUrl(url?: string | null) {
-  if (!url) return null
-  if (url.startsWith('http')) return url
-
-  // En prod: utilise NEXT_PUBLIC_SERVER_URL (https://ton-site.vercel.app)
-  const base =
-    process.env.NEXT_PUBLIC_SERVER_URL ||
-    (typeof window !== 'undefined' ? window.location.origin : '')
-
-  return `${base}${url}`
-}
-
-
 export function BestSelling({ products }: BestSellingProps) {
   const { addItem } = useCart()
   const [selectedTab, setSelectedTab] = useState<string | null>(null)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  // Filtrer par catégorie si une tab est sélectionnée
   const filteredProducts = selectedTab
     ? products.filter((p) => {
         const cat = typeof p.category === 'object' ? p.category.slug : null
@@ -44,7 +30,6 @@ export function BestSelling({ products }: BestSellingProps) {
       })
     : products
 
-  // Carousel logic
   const itemsToShow = 4
   const maxIndex = Math.max(0, filteredProducts.length - itemsToShow)
 
@@ -56,7 +41,6 @@ export function BestSelling({ products }: BestSellingProps) {
     setCurrentIndex((prev) => Math.min(maxIndex, prev + 1))
   }
 
-  // Reset index when changing category
   const handleTabClick = (slug: string | null) => {
     setSelectedTab(slug)
     setCurrentIndex(0)
@@ -68,7 +52,6 @@ export function BestSelling({ products }: BestSellingProps) {
         <div className="text-center">
           <h2 className="text-2xl font-semibold">Best Selling Product</h2>
 
-          {/* Tabs avec filtrage fonctionnel */}
           <div className="mx-auto mt-6 inline-flex items-center gap-1 rounded-full bg-zinc-100 p-1">
             <button
               onClick={() => handleTabClick(null)}
@@ -93,7 +76,6 @@ export function BestSelling({ products }: BestSellingProps) {
         </div>
 
         <div className="relative mt-10">
-          {/* Arrows - Toujours visibles */}
           <button 
             onClick={handlePrev}
             disabled={currentIndex === 0}
@@ -114,20 +96,18 @@ export function BestSelling({ products }: BestSellingProps) {
             <ChevronRight className="h-5 w-5 text-zinc-700" />
           </button>
 
-          {/* Products Grid */}
           <div className="overflow-hidden px-8">
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {filteredProducts.slice(currentIndex, currentIndex + itemsToShow).map((product) => {
-                // Extraire l'image
                 const firstImage = product.images?.[0]
                 const imageData = typeof firstImage?.image === 'object' ? firstImage.image : null
-
-                const rawUrl = imageData?.url || null
-
-                const imageUrl =
-                  toAbsoluteUrl(rawUrl) || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
                 
-                // Catégorie
+                // 🔥 FIX: Utiliser directement les URLs absolues (Unsplash ou Blob)
+                const rawUrl = imageData?.url
+                const imageUrl = (rawUrl && rawUrl.startsWith('http')) 
+                  ? rawUrl 
+                  : 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
+                
                 const category = typeof product.category === 'object' ? product.category.title : 'Product'
 
                 return (
@@ -170,7 +150,6 @@ export function BestSelling({ products }: BestSellingProps) {
             </div>
           </div>
 
-          {/* Indicateurs de position */}
           {maxIndex > 0 && (
             <div className="mt-6 flex justify-center gap-2">
               {Array.from({ length: maxIndex + 1 }).map((_, idx) => (

@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 
-const _stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart()
@@ -17,7 +17,6 @@ export default function CartPage() {
     setIsLoading(true)
 
     try {
-      // Appeler l'API pour créer la session Stripe
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -26,20 +25,28 @@ export default function CartPage() {
         body: JSON.stringify({ items }),
       })
 
-      const { url, error } = await response.json()
+      const data = await response.json()
 
-      if (error) {
-        throw new Error(error)
+      if (data.error) {
+        throw new Error(data.error)
       }
 
-      if (!url) {
-        throw new Error('No checkout URL returned')
+      // Support à la fois 'url' et 'sessionId'
+      if (data.url) {
+        window.location.href = data.url
+      } else if (data.sessionId) {
+        const stripe = await stripePromise
+        if (!stripe) throw new Error('Stripe failed to load')
+        
+        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
+        if (error) throw new Error(error.message)
+      } else {
+        throw new Error('No checkout URL or session ID returned')
       }
-      window.location.href = url
 
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Checkout error:', error)
-      alert('Payment failed. Please try again.')
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
@@ -48,7 +55,6 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-zinc-50">
-        {/* Header */}
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 py-6">
             <Link href="/" className="text-2xl font-bold text-gray-900">
@@ -57,7 +63,6 @@ export default function CartPage() {
           </div>
         </div>
 
-        {/* Empty State */}
         <div className="max-w-7xl mx-auto px-4 py-20">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 mb-6">
@@ -84,7 +89,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -105,19 +109,20 @@ export default function CartPage() {
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => {
               const firstImage = item.product.images?.[0]
               const imageData = typeof firstImage?.image === 'object' ? firstImage.image : null
-              const imageUrl = imageData?.url || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=400'
+              const rawUrl = imageData?.url
+              const imageUrl = (rawUrl && rawUrl.startsWith('http')) 
+                ? rawUrl 
+                : 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=400'
 
               return (
                 <div
                   key={item.product.id}
                   className="bg-white rounded-xl p-6 flex gap-6 shadow-sm"
                 >
-                  {/* Image */}
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
                     <Image
                       src={imageUrl}
@@ -127,7 +132,6 @@ export default function CartPage() {
                     />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1">
                     <Link
                       href={`/products/${item.product.slug}`}
@@ -144,7 +148,6 @@ export default function CartPage() {
                       ${item.product.price}
                     </p>
 
-                    {/* Quantity Controls */}
                     <div className="flex items-center gap-4 mt-4">
                       <div className="flex items-center gap-2">
                         <button
@@ -173,7 +176,6 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  {/* Subtotal */}
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
                       ${(item.product.price * item.quantity).toFixed(2)}
@@ -183,7 +185,6 @@ export default function CartPage() {
               )
             })}
 
-            {/* Clear Cart Button */}
             <button
               onClick={clearCart}
               className="text-red-500 hover:text-red-600 text-sm font-medium transition-colors"
@@ -192,7 +193,6 @@ export default function CartPage() {
             </button>
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl p-6 shadow-sm sticky top-4">
               <h2 className="text-xl font-bold text-gray-900 mb-6">
@@ -220,7 +220,6 @@ export default function CartPage() {
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
 
-                {/* Stripe Checkout Button */}
                 <button 
                   onClick={handleCheckout}
                   disabled={isLoading}
