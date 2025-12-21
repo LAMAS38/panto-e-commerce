@@ -1,64 +1,78 @@
+import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-const reviews = [
+const testimonials = [
   {
     name: 'Bang Upin',
     role: 'Pedagang Asongan',
-    img: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&auto=format&fit=crop',
+    quote: 'Terimakasih banyak, now my room feels more luxurious and comfortable.'
   },
   {
     name: 'Ibuk Susi',
     role: 'Ibu Rumah Tangga',
-    img: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=800&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&auto=format&fit=crop',
+    quote: 'Terimakasih banyak, now my room feels more luxurious and comfortable.'
   },
   {
     name: 'Mpok Ina',
     role: 'Karyawan Swasta',
-    img: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=800&auto=format&fit=crop',
-  },
+    image: 'https://images.unsplash.com/photo-1600878459108-e1eda4ec7e45?w=400&auto=format&fit=crop',
+    quote: 'Terimakasih banyak, now my room feels more luxurious and comfortable.'
+  }
 ]
-
 
 export function Testimonials() {
   return (
-    <section className="bg-white py-16">
-      <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="text-center">
-          <p className="text-xs font-semibold tracking-widest text-orange-500">TESTIMONIALS</p>
-          <h2 className="mt-2 text-2xl font-semibold">Our Client Reviews</h2>
+    <section className="bg-white py-12 md:py-20">
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Header */}
+        <div className="text-center mb-10 md:mb-16">
+          <p className="text-orange-500 font-semibold text-sm md:text-base mb-3 uppercase tracking-wide">
+            TESTIMONIALS
+          </p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
+            Our Client Reviews
+          </h2>
         </div>
 
-        <div className="relative mt-10">
-          <button className="absolute left-0 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow md:inline-flex">
-            <ChevronLeft className="h-5 w-5 text-zinc-700" />
-          </button>
-          <button className="absolute right-0 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow md:inline-flex">
-            <ChevronRight className="h-5 w-5 text-zinc-700" />
-          </button>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {reviews.map((r) => (
-              <div key={r.name} className="overflow-hidden rounded-3xl shadow-sm">
-                <div className="relative h-72 w-full">
-                  <Image src={r.img} alt={r.name} fill className="object-cover" />
-                </div>
-
-                {/* card overlay like mock */}
-                <div className="relative -mt-16 mx-6 rounded-2xl bg-white p-5 text-center shadow">
-                  <p className="text-sm font-semibold">{r.name}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{r.role}</p>
-                  <p className="mt-3 text-xs leading-5 text-zinc-500">
-                    “Terimakasih banyak, now my room feels more luxurious and comfortable.”
-                  </p>
-                  <button className="mt-4 text-xs font-semibold text-orange-500">
-                    VIEW NOW →
-                  </button>
-                </div>
-                <div className="h-8" />
+        {/* Testimonials Grid */}
+        <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+            >
+              {/* Image */}
+              <div className="relative aspect-[4/3]">
+                <Image
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
-            ))}
-          </div>
+
+              {/* Content */}
+              <div className="p-6 md:p-8">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
+                  {testimonial.name}
+                </h3>
+                <p className="text-sm text-gray-500 mb-4">
+                  {testimonial.role}
+                </p>
+                <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+                  &quot;{testimonial.quote}&quot;
+                </p>
+                <Link 
+                  href="/products" 
+                  className="text-sm md:text-base text-orange-500 hover:text-orange-600 font-semibold transition-colors inline-flex items-center gap-1"
+                >
+                  VIEW NOW →
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

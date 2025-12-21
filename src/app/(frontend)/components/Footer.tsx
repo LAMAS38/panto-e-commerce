@@ -2,49 +2,120 @@ import Link from 'next/link'
 
 export function Footer() {
   return (
-    <footer className="bg-white py-14">
-      <div className="mx-auto w-full max-w-6xl px-4">
-        <div className="grid gap-10 md:grid-cols-4">
+    <footer className="bg-white border-t border-gray-200 py-12 md:py-16">
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          {/* Brand */}
           <div>
-            <p className="text-lg font-semibold">Panto</p>
-            <p className="mt-3 text-sm leading-6 text-zinc-500">
+            <Link href="/" className="text-2xl font-bold text-gray-900 mb-4 inline-block">
+              Panto
+            </Link>
+            <p className="text-gray-600 text-sm leading-relaxed">
               The advantage of hiring a workspace with us is that gives you comfortable service and all-around facilities.
             </p>
           </div>
 
+          {/* Services */}
           <div>
-            <p className="text-sm font-semibold text-orange-500">Services</p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-600">
-              <Link href="/email" className="block hover:text-zinc-900">Email Marketing</Link>
-              <Link href="/campaigns" className="block hover:text-zinc-900">Campaigns</Link>
-              <Link href="/branding" className="block hover:text-zinc-900">Branding</Link>
-            </div>
+            <h3 className="text-orange-500 font-semibold mb-4 text-sm md:text-base">
+              Services
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/contact" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  Email Marketing
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  Campaigns
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  Branding
+                </Link>
+              </li>
+            </ul>
           </div>
 
+          {/* Furniture */}
           <div>
-            <p className="text-sm font-semibold text-orange-500">Furniture</p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-600">
-              <Link href="/shop" className="block hover:text-zinc-900">Beds</Link>
-              <Link href="/shop" className="block hover:text-zinc-900">Chair</Link>
-              <Link href="/shop" className="block hover:text-zinc-900">All</Link>
-            </div>
+            <h3 className="text-orange-500 font-semibold mb-4 text-sm md:text-base">
+              Furniture
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/products?category=bed" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  Beds
+                </Link>
+              </li>
+              <li>
+                <Link href="/products?category=chair" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  Chair
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="text-gray-600 hover:text-orange-500 transition-colors text-sm">
+                  All
+                </Link>
+              </li>
+            </ul>
           </div>
 
+          {/* Follow Us */}
           <div>
-            <p className="text-sm font-semibold text-orange-500">Follow Us</p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-600">
-              <a className="block hover:text-zinc-900" href="#">Facebook</a>
-              <a className="block hover:text-zinc-900" href="#">Twitter</a>
-              <a className="block hover:text-zinc-900" href="#">Instagram</a>
-            </div>
+            <h3 className="text-orange-500 font-semibold mb-4 text-sm md:text-base">
+              Follow Us
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a 
+                  href="https://facebook.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                >
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://twitter.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                >
+                  Twitter
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://instagram.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                >
+                  Instagram
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t pt-6 text-xs text-zinc-500 md:flex-row md:items-center md:justify-between">
-          <p>Copyright © 2025</p>
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-gray-500 text-xs md:text-sm">
+            Copyright © 2025
+          </p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-zinc-900">Terms & Conditions</a>
-            <a href="#" className="hover:text-zinc-900">Privacy Policy</a>
+            <Link href="/contact" className="text-gray-500 hover:text-orange-500 transition-colors text-xs md:text-sm">
+              Terms &amp; Conditions
+            </Link>
+            <Link href="/contact" className="text-gray-500 hover:text-orange-500 transition-colors text-xs md:text-sm">
+              Privacy Policy
+            </Link>
           </div>
         </div>
       </div>

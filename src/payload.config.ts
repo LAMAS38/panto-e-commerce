@@ -12,6 +12,7 @@ import { Categories } from './collections/Categories'
 import { Products } from './collections/Products'
 import { Customers } from './collections/Customers'
 import { Orders } from './collections/Orders'
+// import { Reviews } from './collections/Reviews'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

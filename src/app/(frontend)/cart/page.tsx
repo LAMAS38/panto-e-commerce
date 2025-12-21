@@ -5,9 +5,6 @@ import { useCart } from '../context/CartContext'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Trash2, ShoppingBag, ArrowLeft, CreditCard } from 'lucide-react'
-import { loadStripe } from '@stripe/stripe-js'
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalPrice, clearCart } = useCart()
@@ -19,9 +16,7 @@ export default function CartPage() {
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items }),
       })
 
@@ -31,22 +26,16 @@ export default function CartPage() {
         throw new Error(data.error)
       }
 
-      // Support à la fois 'url' et 'sessionId'
-      if (data.url) {
-        window.location.href = data.url
-      } else if (data.sessionId) {
-        const stripe = await stripePromise
-        if (!stripe) throw new Error('Stripe failed to load')
-        
-        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId })
-        if (error) throw new Error(error.message)
-      } else {
-        throw new Error('No checkout URL or session ID returned')
+      if (!data.url) {
+        throw new Error('No checkout URL')
       }
+
+      // Redirection simple
+      window.location.href = data.url
 
     } catch (error) {
       console.error('Checkout error:', error)
-      alert(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsLoading(false)
     }
@@ -72,7 +61,7 @@ export default function CartPage() {
               Your cart is empty
             </h1>
             <p className="text-gray-600 mb-8">
-              Looks like you haven&apos;t added anything to your cart yet.
+              Looks like you haven&apos;t added anything yet.
             </p>
             <Link
               href="/products"
@@ -95,10 +84,7 @@ export default function CartPage() {
             <Link href="/" className="text-2xl font-bold text-gray-900">
               Panto
             </Link>
-            <Link
-              href="/products"
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-            >
+            <Link href="/products" className="text-gray-600 hover:text-gray-900">
               Continue Shopping
             </Link>
           </div>
@@ -119,49 +105,32 @@ export default function CartPage() {
                 : 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=400'
 
               return (
-                <div
-                  key={item.product.id}
-                  className="bg-white rounded-xl p-6 flex gap-6 shadow-sm"
-                >
+                <div key={item.product.id} className="bg-white rounded-xl p-6 flex gap-6 shadow-sm">
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
-                    <Image
-                      src={imageUrl}
-                      alt={item.product.title}
-                      fill
-                      className="object-cover"
-                    />
+                    <Image src={imageUrl} alt={item.product.title} fill className="object-cover" />
                   </div>
 
                   <div className="flex-1">
-                    <Link
-                      href={`/products/${item.product.slug}`}
-                      className="text-lg font-semibold text-gray-900 hover:text-orange-500 transition-colors"
-                    >
+                    <Link href={`/products/${item.product.slug}`} className="text-lg font-semibold text-gray-900 hover:text-orange-500">
                       {item.product.title}
                     </Link>
                     <p className="text-sm text-gray-500 mt-1">
-                      {typeof item.product.category === 'object'
-                        ? item.product.category.title
-                        : 'Product'}
+                      {typeof item.product.category === 'object' ? item.product.category.title : 'Product'}
                     </p>
-                    <p className="text-lg font-bold text-gray-900 mt-2">
-                      ${item.product.price}
-                    </p>
+                    <p className="text-lg font-bold text-gray-900 mt-2">${item.product.price}</p>
 
                     <div className="flex items-center gap-4 mt-4">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200"
                         >
                           −
                         </button>
-                        <span className="w-12 text-center font-semibold">
-                          {item.quantity}
-                        </span>
+                        <span className="w-12 text-center font-semibold">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                          className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200"
                         >
                           +
                         </button>
@@ -169,7 +138,7 @@ export default function CartPage() {
 
                       <button
                         onClick={() => removeItem(item.product.id)}
-                        className="ml-auto text-red-500 hover:text-red-600 transition-colors"
+                        className="ml-auto text-red-500 hover:text-red-600"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -185,19 +154,14 @@ export default function CartPage() {
               )
             })}
 
-            <button
-              onClick={clearCart}
-              className="text-red-500 hover:text-red-600 text-sm font-medium transition-colors"
-            >
+            <button onClick={clearCart} className="text-red-500 hover:text-red-600 text-sm font-medium">
               Clear Cart
             </button>
           </div>
 
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl p-6 shadow-sm sticky top-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Order Summary
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
 
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
@@ -206,11 +170,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span className="font-semibold">Calculated at checkout</span>
+                  <span className="font-semibold">At checkout</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax</span>
-                  <span className="font-semibold">Calculated at checkout</span>
+                  <span className="font-semibold">At checkout</span>
                 </div>
               </div>
 
@@ -223,7 +187,7 @@ export default function CartPage() {
                 <button 
                   onClick={handleCheckout}
                   disabled={isLoading}
-                  className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-orange-500 text-white py-4 rounded-lg font-semibold hover:bg-orange-600 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <>

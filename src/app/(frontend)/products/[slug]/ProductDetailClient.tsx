@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ShoppingBag, Check } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
-import { Navbar } from '../../components/Navbar'
 import type { Product } from '@/payload-types'
 
 interface ProductDetailClientProps {
@@ -42,7 +41,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <Navbar />
 
       {/* Product Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">

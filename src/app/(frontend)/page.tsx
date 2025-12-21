@@ -1,10 +1,9 @@
-import { Navbar } from './components/Navbar'
+
 import { Hero } from './components/Hero'
 import { WhyChoosingUs } from './components/WhyChoosingUs'
 import { BestSelling } from './components/BestSelling'
 import { ExperienceAndMaterials } from './components/ExperienceAndMaterials'
 import { Testimonials } from './components/Testimonials'
-import { Footer } from './components/Footer'
 import { getFeaturedProducts } from '@/lib/payload'
 
 export default async function HomePage() {
@@ -13,13 +12,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar />
       <Hero />
       <WhyChoosingUs />
-      <BestSelling products={featuredProducts} />  {/* ← ICI */}
+      <BestSelling products={featuredProducts} />
       <ExperienceAndMaterials />
       <Testimonials />
-      <Footer />
     </>
   )
 }

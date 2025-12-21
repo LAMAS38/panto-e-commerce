@@ -1,153 +1,154 @@
 'use client'
 
 import { useState } from 'react'
-import { Navbar } from '../components/Navbar'
-import { Mail, Phone, MapPin, Send } from 'lucide-react'
+import Link from 'next/link'
+import { Mail, Phone, MapPin } from 'lucide-react'
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
-  const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
-      setFormData({ name: '', email: '', subject: '', message: '' })
-    }, 3000)
+    setIsSubmitting(true)
+
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    setIsSubmitting(false)
+    setIsSuccess(true)
+
+    // Reset success message after 3 seconds
+    setTimeout(() => setIsSuccess(false), 3000)
+
+    // Reset form
+    ;(e.target as HTMLFormElement).reset()
   }
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-20">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6 text-center">Get in Touch</h1>
-        <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-          Have a question about our products? We&apos;d love to hear from you. Send us a message 
-          and we&apos;ll respond as soon as possible.
-        </p>
+      <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Get In Touch
+          </h1>
+          <p className="text-gray-600 text-lg">
+            We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid lg:grid-cols-3 gap-8 mb-12">
+          {/* Contact Info Cards */}
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <Mail className="w-6 h-6 text-orange-500" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
-            <p className="text-gray-600 text-sm">contact@panto.com</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+            <a href="mailto:hello@panto.com" className="text-gray-600 hover:text-orange-500 transition-colors">
+              hello@panto.com
+            </a>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <Phone className="w-6 h-6 text-orange-500" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
-            <p className="text-gray-600 text-sm">+1 (555) 123-4567</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
+            <a href="tel:+1234567890" className="text-gray-600 hover:text-orange-500 transition-colors">
+              +1 (234) 567-890
+            </a>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <MapPin className="w-6 h-6 text-orange-500" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">Address</h3>
-            <p className="text-gray-600 text-sm">123 Design Street, NY 10001</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Address</h3>
+            <p className="text-gray-600">
+              123 Design Street<br />San Francisco, CA 94102
+            </p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all"
-                  placeholder="John Doe"
-                />
-              </div>
+        {/* Contact Form */}
+        <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+            Send us a message
+          </h2>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2">
-                  Your Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all"
-                  placeholder="john@example.com"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                placeholder="Your name"
+              />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                placeholder="your@email.com"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
                 Subject
               </label>
               <input
                 type="text"
+                id="subject"
+                name="subject"
                 required
-                value={formData.subject}
-                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                 placeholder="How can we help?"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                 Message
               </label>
               <textarea
+                id="message"
+                name="message"
                 required
                 rows={6}
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none transition-all resize-none"
-                placeholder="Tell us more about your inquiry..."
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition resize-none"
+                placeholder="Your message..."
               />
             </div>
 
             <button
               type="submit"
-              className={`w-full py-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                submitted
+              disabled={isSubmitting}
+              className={`w-full py-4 rounded-lg font-semibold transition-colors ${
+                isSuccess
                   ? 'bg-green-500 text-white'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
-              }`}
+                  : 'bg-orange-500 text-white hover:bg-orange-600'
+              } disabled:opacity-50`}
             >
-              {submitted ? (
-                <>
-                  <span>✓</span> Message Sent!
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  Send Message
-                </>
-              )}
+              {isSubmitting ? 'Sending...' : isSuccess ? 'Message Sent! ✓' : 'Send Message'}
             </button>
           </form>
         </div>
       </div>
-
-      <footer className="bg-gray-900 text-gray-300 py-8 mt-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm">© 2025 Panto. Built with Next.js & Payload CMS.</p>
-        </div>
-      </footer>
     </div>
   )
 }

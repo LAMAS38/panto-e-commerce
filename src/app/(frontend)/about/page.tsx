@@ -1,62 +1,84 @@
-import { Navbar } from '../components/Navbar'
 import Link from 'next/link'
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
-      <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 py-20">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6 text-center">About Panto</h1>
-        
-        <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
-          <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-            Welcome to Panto, where minimalist design meets modern living. We curate premium furniture 
-            that transforms your space into a contemporary sanctuary.
+      <div className="max-w-4xl mx-auto px-4 py-12 md:py-20">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            About Panto
+          </h1>
+          <p className="text-gray-600 text-lg">
+            Creating beautiful, minimalist spaces since 2020
           </p>
+        </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">Our Mission</h2>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            We believe that great furniture should be both beautiful and functional. Every piece in our 
-            collection is carefully selected for its quality, design, and ability to enhance your daily life.
+        {/* Mission */}
+        <div className="bg-white rounded-2xl p-8 md:p-12 mb-8 shadow-sm">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Our Mission
+          </h2>
+          <p className="text-gray-600 leading-relaxed mb-4">
+            At Panto, we believe that furniture should be more than just functional – it should transform your space into a sanctuary of comfort and style. Our mission is to provide premium, minimalist furniture that brings elegance and simplicity to modern living.
           </p>
+          <p className="text-gray-600 leading-relaxed">
+            We carefully curate each piece with attention to detail, ensuring that every item meets our high standards of quality, design, and sustainability.
+          </p>
+        </div>
 
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">Why Choose Us</h2>
-          <ul className="space-y-3 text-gray-600">
-            <li className="flex items-start gap-3">
-              <span className="text-orange-500 font-bold">✓</span>
-              <span><strong>Premium Quality:</strong> Every product is crafted with attention to detail</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-orange-500 font-bold">✓</span>
-              <span><strong>Modern Design:</strong> Timeless pieces that elevate any space</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-orange-500 font-bold">✓</span>
-              <span><strong>Affordable Luxury:</strong> High-end furniture at accessible prices</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-orange-500 font-bold">✓</span>
-              <span><strong>Customer First:</strong> Your satisfaction is our priority</span>
-            </li>
-          </ul>
-
-          <div className="mt-12 text-center">
-            <Link 
-              href="/products"
-              className="inline-block bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Explore Our Collection
-            </Link>
+        {/* Why Choose Us */}
+        <div className="bg-white rounded-2xl p-8 md:p-12 mb-8 shadow-sm">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Why Choose Us
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Premium Quality
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Each piece is crafted with the finest materials and attention to detail.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Timeless Design
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Our minimalist aesthetic ensures your furniture never goes out of style.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Affordable Luxury
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Premium furniture at prices that won&apos;t break the bank.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Customer First
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Your satisfaction is our priority, with dedicated support every step of the way.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <footer className="bg-gray-900 text-gray-300 py-8 mt-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-sm">© 2025 Panto. Built with Next.js & Payload CMS.</p>
+        {/* CTA */}
+        <div className="text-center">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
+          >
+            Explore Our Collection
+          </Link>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }

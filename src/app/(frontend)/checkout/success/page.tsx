@@ -1,65 +1,61 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 
 export default function SuccessPage() {
-  const searchParams = useSearchParams()
   const { clearCart } = useCart()
-  const [isCleared, setIsCleared] = useState(false)
-  
-  // Générer orderNumber côté client uniquement
-  const [orderNumber, setOrderNumber] = useState<number | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const [cleared, setCleared] = useState(false)
 
   useEffect(() => {
-    // Générer le numéro de commande une seule fois
-    if (!orderNumber) {
-      setOrderNumber(Math.floor(100000 + Math.random() * 900000))
-    }
-
-    // Vider le panier une seule fois
-    const sessionId = searchParams.get('session_id')
-    if (sessionId && !isCleared) {
+    setMounted(true)
+    
+    // Vider le panier UNE SEULE FOIS
+    if (!cleared) {
       clearCart()
-      setIsCleared(true)
+      setCleared(true)
     }
-  }, [searchParams, orderNumber, isCleared, clearCart])
+  }, [cleared, clearCart])
+
+  // Attendre que le composant soit monté côté client
+  if (!mounted) {
+    return null
+  }
+
+  // Générer le numéro après le mount
+  const orderNumber = Math.floor(100000 + Math.random() * 900000)
 
   return (
     <div className="min-h-screen bg-zinc-50 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg text-center">
-          {/* Success Icon */}
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-6">
             <CheckCircle className="w-12 h-12 text-green-500" />
           </div>
 
-          {/* Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Payment Successful!
           </h1>
 
           <p className="text-gray-600 mb-8">
-            Thank you for your purchase. Your order has been confirmed and will be shipped soon.
+            Thank you for your purchase. Your order has been confirmed.
           </p>
 
-          {/* Order Details */}
           <div className="bg-gray-50 rounded-xl p-6 mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
               <Package className="w-6 h-6 text-orange-500" />
               <p className="text-lg font-semibold text-gray-900">
-                {orderNumber ? `Order #${orderNumber}` : 'Processing...'}
+                Order #{orderNumber}
               </p>
             </div>
             <p className="text-sm text-gray-600">
-              A confirmation email has been sent to your email address.
+              A confirmation email will be sent shortly.
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/products"
@@ -75,13 +71,6 @@ export default function SuccessPage() {
               Back to Home
             </Link>
           </div>
-
-          {/* Session ID for debugging */}
-          {searchParams.get('session_id') && (
-            <p className="text-xs text-gray-400 mt-8">
-              Session ID: {searchParams.get('session_id')}
-            </p>
-          )}
         </div>
       </div>
     </div>
