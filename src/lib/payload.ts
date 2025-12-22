@@ -7,6 +7,15 @@ export async function getPayloadClient() {
   return await getPayload({ config: payloadConfig })
 }
 
+export async function getHome() {
+  const payload = await getPayloadClient()
+
+  return payload.findGlobal({
+    slug: 'home',
+    depth: 2, 
+  })
+}
+
 // Récupérer tous les produits publiés
 export async function getProducts() {
   const payload = await getPayloadClient()

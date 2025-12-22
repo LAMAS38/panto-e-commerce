@@ -4,12 +4,12 @@ export function WhyChoosingUs() {
   return (
     <section className="relative bg-[#f7f7f7] py-12 md:py-20">
       {/* Background Image */}
-      <div
+      {/* <div
         className="absolute inset-0 bg-cover bg-center opacity-20"
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=1600&auto=format&fit=crop')",
         }}
-      />
+      /> */}
 
       <div className="relative mx-auto max-w-6xl px-4">
         <div className="grid gap-8 md:gap-12 lg:grid-cols-4">

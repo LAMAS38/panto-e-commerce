@@ -1,100 +1,77 @@
-import Link from 'next/link'
+// src/app/(frontend)/components/ExperienceAndMaterials.tsx
 import Image from 'next/image'
+import Link from 'next/link'
 
-export function ExperienceAndMaterials() {
+function getMediaUrl(m: any) {
+  if (!m) return ''
+  if (typeof m === 'string' || typeof m === 'number') return ''
+  return m.url || ''
+}
+
+export function ExperienceAndMaterials({ home }: { home: any }) {
+  const expImg = getMediaUrl(home?.experience?.image)
+
+  const tiles: string[] =
+    home?.materials?.tiles?.map((t: any) => getMediaUrl(t?.image)).filter(Boolean) || []
+
+  // fallback simple si jamais pas 4 tiles
+  while (tiles.length < 4) tiles.push('')
+
   return (
-    <section className="bg-white py-12 md:py-20">
-      <div className="mx-auto max-w-6xl px-4">
-        {/* Experience Section */}
-        <div className="grid gap-8 md:gap-12 lg:grid-cols-2 items-center mb-16 md:mb-24">
-          {/* Image */}
-          <div className="order-2 lg:order-1">
-            <div className="relative aspect-[4/3] rounded-2xl md:rounded-3xl overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&auto=format&fit=crop"
-                alt="Modern house exterior"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="order-1 lg:order-2">
-            <p className="text-orange-500 font-semibold text-sm md:text-base mb-3 uppercase tracking-wide">
-              EXPERIENCES
-            </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              We Provide You The Best Experience
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base mb-6 leading-relaxed">
-              You don&apos;t have to worry about the result because all of these interiors are made by people who are professionals in their fields with an elegant and luxurious style and with premium quality materials.
-            </p>
-            <Link 
-              href="/products" 
-              className="text-sm md:text-base text-orange-500 hover:text-orange-600 font-semibold transition-colors inline-flex items-center gap-1"
-            >
-              More Info →
-            </Link>
-          </div>
+    <section className="mx-auto max-w-6xl px-6 py-16 space-y-20">
+      {/* EXPERIENCE */}
+      <div className="grid gap-10 md:grid-cols-2 items-center">
+        <div className="relative h-[260px] md:h-[360px] rounded-[24px] overflow-hidden">
+          {expImg ? (
+            <Image src={expImg} alt="Experience" fill className="object-cover" sizes="50vw" />
+          ) : (
+            <div className="h-full w-full bg-gray-200" />
+          )}
         </div>
 
-        {/* Materials Section */}
-        <div className="grid gap-8 md:gap-12 lg:grid-cols-2 items-center">
-          {/* Content */}
-          <div>
-            <p className="text-orange-500 font-semibold text-sm md:text-base mb-3 uppercase tracking-wide">
-              MATERIALS
-            </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              Very Serious Materials For Making Furniture
-            </h2>
-            <p className="text-gray-600 text-sm md:text-base mb-6 leading-relaxed">
-              Because panto was very serious about designing furniture for our environment, using a very expensive and famous capital but at a relatively low price.
-            </p>
-            <Link 
-              href="/products" 
-              className="text-sm md:text-base text-orange-500 hover:text-orange-600 font-semibold transition-colors inline-flex items-center gap-1"
-            >
-              More Info →
-            </Link>
+        <div>
+          <div className="text-orange-500 text-xs tracking-widest font-semibold uppercase">
+            Experiences
           </div>
+          <h2 className="mt-2 text-3xl md:text-4xl font-semibold">
+            {home?.experience?.title}
+          </h2>
+          <p className="mt-4 text-gray-600">
+            {home?.experience?.subtitle}
+          </p>
+          <Link href="/about" className="mt-6 inline-flex items-center gap-2 text-orange-500">
+            More Info <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </div>
 
-          {/* Images Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="relative aspect-square rounded-2xl overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=400&auto=format&fit=crop"
-                alt="Interior design 1"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden mt-8">
-              <Image
-                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&auto=format&fit=crop"
-                alt="Interior design 2"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden -mt-8">
-              <Image
-                src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&auto=format&fit=crop"
-                alt="Interior design 3"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="relative aspect-square rounded-2xl overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1615873968403-89e068629265?w=400&auto=format&fit=crop"
-                alt="Interior design 4"
-                fill
-                className="object-cover"
-              />
-            </div>
+      {/* MATERIALS */}
+      <div className="grid gap-10 md:grid-cols-2 items-center">
+        <div>
+          <div className="text-orange-500 text-xs tracking-widest font-semibold uppercase">
+            Materials
           </div>
+          <h2 className="mt-2 text-3xl md:text-4xl font-semibold">
+            {home?.materials?.title}
+          </h2>
+          <p className="mt-4 text-gray-600">
+            {home?.materials?.subtitle}
+          </p>
+          <Link href="/shop" className="mt-6 inline-flex items-center gap-2 text-orange-500">
+            More Info <span aria-hidden>→</span>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          {tiles.map((src, i) => (
+            <div key={i} className="relative h-[160px] rounded-[20px] overflow-hidden">
+              {src ? (
+                <Image src={src} alt={`Material ${i + 1}`} fill className="object-cover" sizes="25vw" />
+              ) : (
+                <div className="h-full w-full bg-gray-200" />
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </section>

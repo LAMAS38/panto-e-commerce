@@ -1,21 +1,19 @@
-
 import { Hero } from './components/Hero'
 import { WhyChoosingUs } from './components/WhyChoosingUs'
 import { BestSelling } from './components/BestSelling'
 import { ExperienceAndMaterials } from './components/ExperienceAndMaterials'
 import { Testimonials } from './components/Testimonials'
-// import { getFeaturedProducts } from '@/lib/payload'
+import { getHome } from '@/lib/payload'
 
 export default async function HomePage() {
-  // Fetch products côté serveur
-  // const featuredProducts = await getFeaturedProducts()
+  const [home] = await Promise.all([getHome()])
 
   return (
     <>
-      <Hero />
+      <Hero home={home} />
       <WhyChoosingUs />
       <BestSelling />
-      <ExperienceAndMaterials />
+      <ExperienceAndMaterials home={home} />
       <Testimonials />
     </>
   )

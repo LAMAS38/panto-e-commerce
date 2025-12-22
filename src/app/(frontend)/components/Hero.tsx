@@ -1,32 +1,45 @@
+// src/app/(frontend)/components/Hero.tsx
+import Image from 'next/image'
 import { SearchBar } from './SearchBar'
+function getMediaUrl(m: any) {
+  // m peut être: id, ou objet Media résolu
+  if (!m) return ''
+  if (typeof m === 'string' || typeof m === 'number') return ''
+  return m.url || ''
+}
 
-export function Hero() {
+export function Hero({ home }: { home: any }) {
+  const bg = getMediaUrl(home?.hero?.background)
+
   return (
-    <section className="relative h-[500px] w-full overflow-hidden rounded-b-[20px] md:h-[700px] lg:h-[860px] md:rounded-b-[40px]">
-      {/* Background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1615873968403-89e068629265?q=80&w=2000&auto=format&fit=crop')",
-        }}
-      />
-
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/25 to-black/10" />
+    <section className="relative w-full overflow-hidden rounded-[24px]">
+      {/* Background image */}
+      {bg ? (
+        <div className="absolute inset-0">
+          <Image
+            src={bg}
+            alt="Hero background"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+      ) : (
+        <div className="absolute inset-0 bg-gray-200" />
+      )}
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col items-center justify-center px-4 text-center text-white">
-        <h1 className="max-w-4xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-          Make Your Interior More <br className="hidden md:block" />
-          Minimalistic &amp; Modern
+      <div className="relative mx-auto max-w-6xl px-6 py-28 text-center text-white">
+        <h1 className="text-4xl md:text-6xl font-semibold leading-tight">
+          {home?.hero?.title}
         </h1>
-
-        <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 md:mt-6 md:text-base">
-          Turn your room with panto into a lot more minimalist and modern with ease and speed
+        <p className="mx-auto mt-4 max-w-2xl text-white/90">
+          {home?.hero?.subtitle}
         </p>
 
-        {/* Search */}
+        {/* Si tu as une search bar ici, garde-la; sinon laisse clean */}
         <SearchBar />
       </div>
     </section>

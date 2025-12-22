@@ -7,7 +7,7 @@ import config from '../src/payload.config'
 type SeedMedia = {
   alt: string
   url: string
-  uniqueId: string // Pour retrouver l'image plus tard
+  uniqueId: string
 }
 
 type SeedCategory = {
@@ -25,7 +25,7 @@ type SeedProduct = {
   featured: boolean
   status: 'published' | 'draft'
   rating: number
-  imageIds: string[] // IDs des Media
+  imageIds: string[]
 }
 
 type SeedReview = {
@@ -37,8 +37,8 @@ type SeedReview = {
   featured: boolean
   published: boolean
   order: number
-  backgroundId: string // ID de Media pour background
-  avatarId: string // ID de Media pour avatar
+  backgroundId: string
+  avatarId: string
 }
 
 async function fetchImageAsFile(url: string) {
@@ -89,7 +89,6 @@ async function findBySlug<TDoc>(
 }
 
 async function upsertMedia(payload: any, m: SeedMedia) {
-  // Chercher par alt (puisqu'il n'y a plus de slug)
   const existing = await payload.find({
     collection: 'media',
     where: { alt: { equals: m.alt } },
@@ -242,6 +241,14 @@ async function main() {
     { uniqueId: 'r-avatar-4', alt: 'Mpok Ina portrait', url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&auto=format&fit=crop' },
     { uniqueId: 'r-avatar-5', alt: 'Aya portrait', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop' },
     { uniqueId: 'r-avatar-6', alt: 'Yass portrait', url: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=800&auto=format&fit=crop' },
+
+    // Home page images
+    { uniqueId: 'home-hero', alt: 'Home Hero Background', url: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1600&auto=format&fit=crop' },
+    { uniqueId: 'home-exp', alt: 'Home Experience Image', url: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&auto=format&fit=crop' },
+    { uniqueId: 'tile-1', alt: 'Home Materials Tile 1', url: 'https://images.unsplash.com/photo-1549497538-303791108f95?w=1200&auto=format&fit=crop' },
+    { uniqueId: 'tile-2', alt: 'Home Materials Tile 2', url: 'https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?w=1200&auto=format&fit=crop' },
+    { uniqueId: 'tile-3', alt: 'Home Materials Tile 3', url: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200&auto=format&fit=crop' },
+    { uniqueId: 'tile-4', alt: 'Home Materials Tile 4', url: 'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=1200&auto=format&fit=crop' },
   ]
 
   const mediaById: Record<string, any> = {}
@@ -543,12 +550,62 @@ async function main() {
     }
   }
 
+  console.log('\n')
+
+  // -----------------------
+  // 5) Home Global
+  // -----------------------
+  console.log('🏠 Mise à jour du global Home...\n')
+
+  const heroBg = mediaById['home-hero']
+  const expImg = mediaById['home-exp']
+  const tile1 = mediaById['tile-1']
+  const tile2 = mediaById['tile-2']
+  const tile3 = mediaById['tile-3']
+  const tile4 = mediaById['tile-4']
+
+  if (heroBg?.id && expImg?.id && tile1?.id && tile2?.id && tile3?.id && tile4?.id) {
+    await payload.updateGlobal({
+      slug: 'home',
+      data: {
+        hero: {
+          title: 'Make Your Interior More\nMinimalistic & Modern',
+          subtitle:
+            'Turn your room with panto into a lot more minimalist and modern with ease.',
+          background: heroBg.id,
+        },
+        experience: {
+          title: 'We Provide You The Best Experience',
+          subtitle:
+            "You don't have to worry about the result because all of these interiors are made by people who are professionals.",
+          image: expImg.id,
+        },
+        materials: {
+          title: 'Very Serious Materials\nFor Making Furniture',
+          subtitle:
+            'Because panto was very serious about designing furniture for our environment, using very expensive materials but at a relatively low price.',
+          tiles: [
+            { image: tile1.id },
+            { image: tile2.id },
+            { image: tile3.id },
+            { image: tile4.id },
+          ],
+        },
+      },
+    })
+
+    console.log('✅ Home global mis à jour!')
+  } else {
+    console.warn('⚠️ Home global non mis à jour (une ou plusieurs images manquantes).')
+  }
+
   console.log('\n✅ Seed terminé avec succès!')
   console.log('📊 Résumé:')
   console.log(`  - Images: ${mediaData.length}`)
   console.log(`  - Catégories: ${categories.length}`)
   console.log(`  - Produits: ${products.length}`)
   console.log(`  - Reviews: ${reviews.length}`)
+  console.log(`  - Home global: ✅`)
 }
 
 main().catch((e) => {

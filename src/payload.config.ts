@@ -13,6 +13,7 @@ import { Products } from './collections/Products'
 import { Customers } from './collections/Customers'
 import { Orders } from './collections/Orders'
 import { Reviews } from './collections/Reviews'
+import { Home } from './globals/Home'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -35,6 +36,7 @@ export default buildConfig({
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+  globals: [Home],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
