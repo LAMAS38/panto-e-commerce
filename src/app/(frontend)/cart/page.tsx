@@ -30,7 +30,6 @@ export default function CartPage() {
         throw new Error('No checkout URL')
       }
 
-      // Redirection simple
       window.location.href = data.url
 
     } catch (error) {
@@ -170,11 +169,11 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span className="font-semibold">At checkout</span>
+                  <span className="font-semibold text-green-600">FREE</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax</span>
-                  <span className="font-semibold">At checkout</span>
+                  <span className="font-semibold text-green-600">FREE</span>
                 </div>
               </div>
 

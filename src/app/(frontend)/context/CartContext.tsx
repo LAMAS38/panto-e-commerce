@@ -22,30 +22,34 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const [mounted, setMounted] = useState(false)
 
   // Charger le panier depuis localStorage au montage
   useEffect(() => {
+    setMounted(true)
     const saved = localStorage.getItem('panto-cart')
     if (saved) {
       try {
         setItems(JSON.parse(saved))
       } catch (e) {
         console.error('Failed to parse cart:', e)
+        localStorage.removeItem('panto-cart')
       }
     }
   }, [])
 
   // Sauvegarder le panier dans localStorage à chaque changement
   useEffect(() => {
-    localStorage.setItem('panto-cart', JSON.stringify(items))
-  }, [items])
+    if (mounted) {
+      localStorage.setItem('panto-cart', JSON.stringify(items))
+    }
+  }, [items, mounted])
 
   const addItem = (product: Product, quantity = 1) => {
     setItems((current) => {
       const existing = current.find((item) => item.product.id === product.id)
       
       if (existing) {
-        // Augmenter la quantité si le produit existe déjà
         return current.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
@@ -53,7 +57,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         )
       }
       
-      // Ajouter un nouveau produit
       return [...current, { product, quantity }]
     })
   }
@@ -76,7 +79,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   const clearCart = () => {
+    console.log('🗑️ Clearing cart...')
     setItems([])
+    localStorage.removeItem('panto-cart')
+    
+    // Force un re-render de toute l'app après 50ms
+    setTimeout(() => {
+      window.dispatchEvent(new Event('storage'))
+    }, 50)
   }
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)

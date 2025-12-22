@@ -1,31 +1,32 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Package, ArrowRight } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 
 export default function SuccessPage() {
+  const router = useRouter()
   const { clearCart } = useCart()
   const [mounted, setMounted] = useState(false)
-  const [cleared, setCleared] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     
-    // Vider le panier UNE SEULE FOIS
-    if (!cleared) {
-      clearCart()
-      setCleared(true)
-    }
-  }, [cleared, clearCart])
+    // Vider le panier immédiatement
+    clearCart()
+    
+    // Forcer un refresh pour mettre à jour la Navbar
+    setTimeout(() => {
+      router.refresh()
+    }, 100)
+  }, []) // Pas de dépendances pour s'exécuter UNE FOIS
 
-  // Attendre que le composant soit monté côté client
   if (!mounted) {
     return null
   }
 
-  // Générer le numéro après le mount
   const orderNumber = Math.floor(100000 + Math.random() * 900000)
 
   return (
