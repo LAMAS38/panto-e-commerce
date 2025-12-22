@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Facebook, Twitter, Instagram } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -75,8 +76,9 @@ export function Footer() {
                   href="https://facebook.com" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                  className="flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors text-sm group"
                 >
+                  <Facebook className="w-4 h-4 group-hover:text-orange-500" />
                   Facebook
                 </a>
               </li>
@@ -85,8 +87,9 @@ export function Footer() {
                   href="https://twitter.com" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                  className="flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors text-sm group"
                 >
+                  <Twitter className="w-4 h-4 group-hover:text-orange-500" />
                   Twitter
                 </a>
               </li>
@@ -95,8 +98,9 @@ export function Footer() {
                   href="https://instagram.com" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-gray-600 hover:text-orange-500 transition-colors text-sm"
+                  className="flex items-center gap-2 text-gray-600 hover:text-orange-500 transition-colors text-sm group"
                 >
+                  <Instagram className="w-4 h-4 group-hover:text-orange-500" />
                   Instagram
                 </a>
               </li>

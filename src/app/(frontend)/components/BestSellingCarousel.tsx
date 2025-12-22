@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
+import { useCart } from '../context/CartContext'
 
 type Category = {
   id: number
@@ -33,7 +34,6 @@ function resolveMediaUrl(m: number | Media | null | undefined) {
   const url = m.url ?? null
   if (!url) return null
 
-  // Si Payload renvoie une URL relative (/media/xxx), on la rend absolue
   if (url.startsWith('/')) {
     const base =
       process.env.NEXT_PUBLIC_SERVER_URL ||
@@ -68,6 +68,8 @@ export default function BestSellingCarousel({
   categories: Category[]
   products: Product[]
 }) {
+  const { addItem } = useCart()
+  
   const tabs = useMemo(
     () => [{ title: 'All', slug: 'all' }, ...categories.map((c) => ({ title: c.title, slug: c.slug }))],
     [categories],
@@ -90,7 +92,6 @@ export default function BestSellingCarousel({
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
-  // reset position quand on change de tab
   useEffect(() => {
     emblaApi?.scrollTo(0)
   }, [active, emblaApi])
@@ -198,7 +199,12 @@ export default function BestSellingCarousel({
 
                           <button
                             type="button"
-                            className="h-12 w-12 rounded-full bg-gray-900 text-white text-xl leading-none hover:opacity-90"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              // Convertir Product vers le type complet pour addItem
+                              addItem(p as any, 1)
+                            }}
+                            className="h-12 w-12 rounded-full bg-gray-900 text-white text-xl leading-none hover:bg-orange-500 transition-colors"
                             aria-label="Add to cart"
                           >
                             +
