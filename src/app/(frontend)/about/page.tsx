@@ -1,9 +1,14 @@
+// Modified about page to enhance responsive layout
+// Corresponds to src/app/(frontend)/about/page.tsx in the original project.
+// Changes:
+// - Updated 'Why Choose Us' grid to display two columns on small screens and
+//   four columns on large screens using sm:grid-cols-2 and lg:grid-cols-4.
+
 import Link from 'next/link'
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-zinc-50">
-
       <div className="max-w-4xl mx-auto px-4 py-12 md:py-20">
         {/* Header */}
         <div className="text-center mb-12">
@@ -14,7 +19,6 @@ export default function AboutPage() {
             Creating beautiful, minimalist spaces since 2020
           </p>
         </div>
-
         {/* Mission */}
         <div className="bg-white rounded-2xl p-8 md:p-12 mb-8 shadow-sm">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
@@ -27,13 +31,12 @@ export default function AboutPage() {
             We carefully curate each piece with attention to detail, ensuring that every item meets our high standards of quality, design, and sustainability.
           </p>
         </div>
-
         {/* Why Choose Us */}
         <div className="bg-white rounded-2xl p-8 md:p-12 mb-8 shadow-sm">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
             Why Choose Us
           </h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Premium Quality
@@ -68,7 +71,6 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-
         {/* CTA */}
         <div className="text-center">
           <Link

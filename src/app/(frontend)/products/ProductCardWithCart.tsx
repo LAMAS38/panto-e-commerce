@@ -1,4 +1,10 @@
+// Modified version of ProductCardWithCart with unified styling and accent colours.
+// Ensure this component is treated as a Client Component by Next.js. The CartContext hook is client-side only.
 'use client'
+// Original file is located at src/app/(frontend)/products/ProductCardWithCart.tsx in the remote repository.
+// Changes:
+// - Added border to the card container for better separation on light backgrounds.
+// - Unified discount badge colour to orange (same accent used elsewhere) instead of red.
 
 import Link from 'next/link'
 import Image from 'next/image'
@@ -13,24 +19,26 @@ interface ProductCardProps {
 export default function ProductCardWithCart({ product }: ProductCardProps) {
   const { addItem } = useCart()
 
-  // Extraire la première image
+  // Extract the first image from the product
   const firstImage = product.images?.[0]
   const imageData = typeof firstImage?.image === 'object' ? firstImage.image : null
-  const imageUrl = imageData?.url || 'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
+  const imageUrl =
+    imageData?.url ||
+    'https://images.unsplash.com/photo-1598300056393-4aac492f4344?w=800&auto=format&fit=crop'
   const imageAlt = imageData?.alt || product.title
 
-  // Calculer le discount (version ultra-safe)
+  // Compute discount (safe version)
   const comparePrice = product.compareAtPrice ?? 0
   const hasDiscount = comparePrice > 0 && comparePrice > product.price
   const discountPercent = hasDiscount
     ? Math.round(((comparePrice - product.price) / comparePrice) * 100)
     : 0
 
-  // Catégorie
+  // Category title
   const category = typeof product.category === 'object' ? product.category.title : 'Product'
 
   return (
-    <div className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
       {/* Image Container */}
       <Link href={`/products/${product.slug}`}>
         <div className="relative aspect-square overflow-hidden bg-gray-50">
@@ -51,7 +59,7 @@ export default function ProductCardWithCart({ product }: ProductCardProps) {
 
           {/* Badge discount */}
           {hasDiscount && (
-            <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+            <div className="absolute top-3 right-3 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
               -{discountPercent}%
             </div>
           )}
@@ -61,9 +69,7 @@ export default function ProductCardWithCart({ product }: ProductCardProps) {
       {/* Product Info */}
       <div className="p-4">
         {/* Category */}
-        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-          {category}
-        </p>
+        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{category}</p>
 
         {/* Title */}
         <Link href={`/products/${product.slug}`}>
@@ -77,9 +83,7 @@ export default function ProductCardWithCart({ product }: ProductCardProps) {
           <div className="flex items-baseline gap-2">
             <span className="text-lg font-bold text-gray-900">${product.price}</span>
             {hasDiscount && (
-              <span className="text-sm text-gray-500 line-through">
-                ${comparePrice}
-              </span>
+              <span className="text-sm text-gray-500 line-through">${comparePrice}</span>
             )}
           </div>
 

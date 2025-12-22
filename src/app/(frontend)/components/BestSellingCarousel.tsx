@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useCart } from '../context/CartContext'
 
+// Type definitions remain unchanged
 type Category = {
   id: number
   title: string
@@ -29,11 +30,11 @@ type Product = {
   images?: { image: number | Media }[] | null
 }
 
+// Helper to resolve media URLs, identical to the project version
 function resolveMediaUrl(m: number | Media | null | undefined) {
   if (!m || typeof m === 'number') return null
   const url = m.url ?? null
   if (!url) return null
-
   if (url.startsWith('/')) {
     const base =
       process.env.NEXT_PUBLIC_SERVER_URL ||
@@ -41,7 +42,6 @@ function resolveMediaUrl(m: number | Media | null | undefined) {
       'http://localhost:3000'
     return `${base}${url}`
   }
-
   return url
 }
 
@@ -61,6 +61,11 @@ function Stars({ value }: { value: number }) {
   )
 }
 
+/**
+ * Carousel showcasing best-selling products with category filters.
+ * Added micro‑interactions: card shadow/ring transitions,
+ * image scaling on hover via group hover, and enhanced button focus states.
+ */
 export default function BestSellingCarousel({
   categories,
   products,
@@ -69,9 +74,12 @@ export default function BestSellingCarousel({
   products: Product[]
 }) {
   const { addItem } = useCart()
-  
+
   const tabs = useMemo(
-    () => [{ title: 'All', slug: 'all' }, ...categories.map((c) => ({ title: c.title, slug: c.slug }))],
+    () => [
+      { title: 'All', slug: 'all' },
+      ...categories.map((c) => ({ title: c.title, slug: c.slug })),
+    ],
     [categories],
   )
 
@@ -99,9 +107,7 @@ export default function BestSellingCarousel({
   return (
     <section className="py-16">
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="text-center text-3xl font-bold text-gray-900">
-          Best Selling Product
-        </h2>
+        <h2 className="text-center text-3xl font-bold text-gray-900">Best Selling Product</h2>
 
         {/* Tabs */}
         <div className="mt-6 flex justify-center">
@@ -128,7 +134,7 @@ export default function BestSellingCarousel({
           <button
             type="button"
             onClick={scrollPrev}
-            className="absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow p-3 hover:shadow-md"
+            className="absolute left-0 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow p-3 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             aria-label="Previous"
           >
             ←
@@ -137,7 +143,7 @@ export default function BestSellingCarousel({
           <button
             type="button"
             onClick={scrollNext}
-            className="absolute right-0 top-1/2 z-10 translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow p-3 hover:shadow-md"
+            className="absolute right-0 top-1/2 z-10 translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow p-3 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             aria-label="Next"
           >
             →
@@ -155,15 +161,15 @@ export default function BestSellingCarousel({
                     key={p.id}
                     className="min-w-0 flex-[0_0_85%] sm:flex-[0_0_48%] lg:flex-[0_0_23%]"
                   >
-                    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100">
-                      <Link href={`/products/${p.slug}`} className="block">
+                    <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition hover:ring-orange-500 hover:shadow-lg">
+                      <Link href={`/products/${p.slug}`} className="block group">
                         <div className="relative h-64 bg-gray-50">
                           {img ? (
                             <Image
-                              src={img}
+                              src={img!}
                               alt={p.title}
                               fill
-                              className="object-contain p-6"
+                              className="object-contain p-6 transition-transform duration-300 group-hover:scale-110"
                               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 90vw"
                             />
                           ) : (
@@ -193,18 +199,15 @@ export default function BestSellingCarousel({
                         <Stars value={rating} />
 
                         <div className="mt-4 flex items-center justify-between">
-                          <div className="text-lg font-bold text-gray-900">
-                            ${p.price}
-                          </div>
+                          <div className="text-lg font-bold text-gray-900">${p.price}</div>
 
                           <button
                             type="button"
                             onClick={(e) => {
                               e.preventDefault()
-                              // Convertir Product vers le type complet pour addItem
                               addItem(p as any, 1)
                             }}
-                            className="h-12 w-12 rounded-full bg-gray-900 text-white text-xl leading-none hover:bg-orange-500 transition-colors"
+                            className="h-12 w-12 rounded-full bg-gray-900 text-white text-xl leading-none hover:bg-orange-500 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500"
                             aria-label="Add to cart"
                           >
                             +

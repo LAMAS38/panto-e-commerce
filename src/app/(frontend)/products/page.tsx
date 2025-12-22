@@ -1,3 +1,9 @@
+// Modified products listing page to improve responsiveness across mobile, tablet and desktop
+// Corresponds to src/app/(frontend)/products/page.tsx in the original project.
+// Changes:
+// - Updated product grid to add a tablet breakpoint (md) so that three columns appear
+//   on tablet screens (≥768px) and four columns on desktop (≥1024px).
+
 import Link from 'next/link'
 import { getProducts, getCategories } from '@/lib/payload'
 import ProductCardWithCart from './ProductCardWithCart'
@@ -27,7 +33,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       const title = p.title.toLowerCase()
       const description = p.description?.toLowerCase() || ''
       const category = typeof p.category === 'object' ? p.category.title.toLowerCase() : ''
-      
       return (
         title.includes(searchQuery) ||
         description.includes(searchQuery) ||
@@ -45,26 +50,23 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               {searchQuery ? `Search results for "${searchQuery}"` : 'All Products'}
             </h1>
             <p className="text-gray-600 text-sm md:text-base">
-              {searchQuery 
+              {searchQuery
                 ? `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`
-                : 'Discover our complete collection of premium furniture'
-              }
+                : 'Discover our complete collection of premium furniture'}
             </p>
           </div>
-
           <div className="mb-8 max-w-2xl mx-auto">
             <ProductSearchBar initialQuery={searchQuery} />
           </div>
-
           {!searchQuery && (
             <div className="mb-8">
-              <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
                 <Link
                   href="/products"
-                  className={`px-4 md:px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                  className={`px-4 md:px-6 py-2 rounded-full text-sm font-medium transition-all border ${
                     !selectedCategory
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gray-900 text-white border-gray-900'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 border-gray-200'
                   }`}
                 >
                   All
@@ -73,10 +75,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <Link
                     key={cat.id}
                     href={`/products?category=${cat.slug}`}
-                    className={`px-4 md:px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                    className={`px-4 md:px-6 py-2 rounded-full text-sm font-medium transition-all border ${
                       selectedCategory === cat.slug
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'bg-white text-gray-700 hover:bg-gray-100 border-gray-200'
                     }`}
                   >
                     {cat.title}
@@ -85,9 +87,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             </div>
           )}
-
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {filteredProducts.map((product) => (
                 <ProductCardWithCart key={product.id} product={product} />
               ))}
@@ -95,10 +96,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           ) : (
             <div className="text-center py-20 bg-white rounded-lg">
               <p className="text-gray-600 text-lg mb-2">
-                {searchQuery 
+                {searchQuery
                   ? `No products found for "${searchQuery}"`
-                  : 'No products found in this category.'
-                }
+                  : 'No products found in this category.'}
               </p>
               <Link
                 href="/products"
@@ -108,7 +108,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </Link>
             </div>
           )}
-
           <div className="mt-8 text-center text-sm text-gray-500">
             Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
           </div>

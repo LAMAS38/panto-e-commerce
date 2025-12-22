@@ -1,3 +1,9 @@
+// Modified contact page to improve responsive layout across devices
+// Corresponds to src/app/(frontend)/contact/page.tsx in the original project.
+// Changes:
+// - Updated contact information grid to use md:grid-cols-2 and lg:grid-cols-3
+//   so that cards display in two columns on tablets and three on large screens.
+
 'use client'
 
 import { useState } from 'react'
@@ -11,23 +17,18 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
-
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
+    // Simulate form submission delay
+    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsSubmitting(false)
     setIsSuccess(true)
-
     // Reset success message after 3 seconds
     setTimeout(() => setIsSuccess(false), 3000)
-
-    // Reset form
+    // Reset form fields
     ;(e.target as HTMLFormElement).reset()
   }
 
   return (
     <div className="min-h-screen bg-zinc-50">
-
       <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
         {/* Header */}
         <div className="text-center mb-12">
@@ -38,9 +39,8 @@ export default function ContactPage() {
             We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>
-
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          {/* Contact Info Cards */}
+        {/* Contact Info Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <Mail className="w-6 h-6 text-orange-500" />
@@ -50,7 +50,6 @@ export default function ContactPage() {
               hello@panto.com
             </a>
           </div>
-
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <Phone className="w-6 h-6 text-orange-500" />
@@ -60,7 +59,6 @@ export default function ContactPage() {
               +1 (234) 567-890
             </a>
           </div>
-
           <div className="bg-white rounded-xl p-6 shadow-sm text-center">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4">
               <MapPin className="w-6 h-6 text-orange-500" />
@@ -71,13 +69,11 @@ export default function ContactPage() {
             </p>
           </div>
         </div>
-
         {/* Contact Form */}
         <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm max-w-2xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
             Send us a message
           </h2>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -92,7 +88,6 @@ export default function ContactPage() {
                 placeholder="Your name"
               />
             </div>
-
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -106,7 +101,6 @@ export default function ContactPage() {
                 placeholder="your@email.com"
               />
             </div>
-
             <div>
               <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
                 Subject
@@ -120,7 +114,6 @@ export default function ContactPage() {
                 placeholder="How can we help?"
               />
             </div>
-
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                 Message
@@ -134,7 +127,6 @@ export default function ContactPage() {
                 placeholder="Your message..."
               />
             </div>
-
             <button
               type="submit"
               disabled={isSubmitting}
@@ -144,7 +136,11 @@ export default function ContactPage() {
                   : 'bg-orange-500 text-white hover:bg-orange-600'
               } disabled:opacity-50`}
             >
-              {isSubmitting ? 'Sending...' : isSuccess ? 'Message Sent! ✓' : 'Send Message'}
+              {isSubmitting
+                ? 'Sending...'
+                : isSuccess
+                  ? 'Message Sent! ✓'
+                  : 'Send Message'}
             </button>
           </form>
         </div>

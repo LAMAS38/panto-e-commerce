@@ -1,3 +1,7 @@
+// Modified Navbar to handle safe area on devices with notches (e.g. iPhones)
+// Adds padding to the top of the header to accommodate env(safe-area-inset-top)
+// This file corresponds to src/app/(frontend)/components/Navbar.tsx in the original project.
+
 'use client'
 
 import Link from 'next/link'
@@ -11,16 +15,36 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5">
+    // Apply safe area padding to the top of the navbar for devices with notches
+    <header
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      // Add relative positioning so that the mobile menu can be absolutely positioned
+      // relative to this header. Without this, the absolute positioning would be
+      // relative to the nearest positioned ancestor (which might not be the header).
+      className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 relative"
+    >
+      {/*
+        Reduce horizontal padding on small screens to bring icons closer to the edges.
+        We keep wider padding from the md breakpoint onwards to preserve desktop spacing.
+      */}
+      {/*
+        Use max-w-7xl to align the navbar's width with the main page content (e.g. cart, products pages)
+        and reduce horizontal padding on small screens.
+      */}
+      {/*
+        Use a full-width container instead of max-w-7xl so the navbar
+        aligns flush with whatever parent container it sits within (e.g.,
+        cards on the cart page). This avoids visible left/right offsets
+        when the page container has its own max-width smaller than 7xl.
+      */}
+      <div className="mx-auto flex w-full items-center justify-between px-2 md:px-4 py-5">
         {/* Logo */}
         <Link href="/" className="text-lg font-semibold text-white hover:text-orange-400 transition-colors">
           Panto
         </Link>
-
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 text-sm text-white/90 md:flex">
-          <div 
+          <div
             className="relative"
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
@@ -29,42 +53,61 @@ export function Navbar() {
               Furniture <ChevronDown className="h-4 w-4" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute left-0 top-8 w-44 rounded-xl bg-white p-2 text-zinc-900 shadow-xl">
-                <Link 
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors" 
-                  href="/products?category=chair"
+              <div
+                className="absolute left-0 top-full w-44 rounded-xl bg-white p-2 text-zinc-900 shadow-xl"
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
+                <Link
+                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                  href="/products?category=chairs"
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Chairs
                 </Link>
-                <Link 
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors" 
-                  href="/products?category=sofa"
+                <Link
+                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                  href="/products?category=sofas"
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Sofas
                 </Link>
-                <Link 
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors" 
-                  href="/products?category=lamp"
+                <Link
+                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                  href="/products?category=lamps"
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Lamps
                 </Link>
-                <Link 
-                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors" 
-                  href="/products?category=bed"
+                <Link
+                  className="block rounded-lg px-3 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                  href="/products?category=beds"
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Beds
                 </Link>
               </div>
             )}
           </div>
-
-          <Link className="hover:text-white transition-colors" href="/products">Shop</Link>
-          <Link className="hover:text-white transition-colors" href="/about">About Us</Link>
-          <Link className="hover:text-white transition-colors" href="/contact">Contact</Link>
+          <Link className="hover:text-white transition-colors" href="/products">
+            Shop
+          </Link>
+          <Link className="hover:text-white transition-colors" href="/about">
+            About Us
+          </Link>
+          <Link className="hover:text-white transition-colors" href="/contact">
+            Contact
+          </Link>
         </nav>
-
-        {/* Right Side - Cart + Mobile Menu Button */}
-        <div className="flex items-center gap-4">
+        {/*
+          Right side container: set a minimum width so that the
+          overall width of the cart + menu buttons remains stable even
+          when the cart badge is shown. Without this, the presence of a
+          badge can change the group’s width and visually shift the
+          navbar contents left or right on mobile. We calculate
+          min-w-[88px]: two 40px buttons plus ~8px gap.
+        */}
+        <div className="flex items-center gap-4 min-w-[88px]">
           {/* Cart */}
           <Link
             href="/cart"
@@ -78,7 +121,6 @@ export function Navbar() {
               </span>
             )}
           </Link>
-
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -89,56 +131,61 @@ export function Navbar() {
           </button>
         </div>
       </div>
-
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur">
-          <nav className="flex flex-col px-4 py-4 space-y-2">
-            <Link 
-              href="/products" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+        <div
+          // Position the mobile menu directly below the navbar and let it fill the remaining viewport height.
+          className="md:hidden absolute inset-x-0 top-full border-t border-white/10 bg-black/95 backdrop-blur-sm"
+        >
+          <nav className="flex flex-col gap-4 px-6 py-8 text-white">
+            <Link
+              href="/products"
+              className="text-lg font-medium hover:text-orange-400 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Shop
             </Link>
-            <Link 
-              href="/products?category=chair" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              • Chairs
-            </Link>
-            <Link 
-              href="/products?category=sofa" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              • Sofas
-            </Link>
-            <Link 
-              href="/products?category=lamp" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              • Lamps
-            </Link>
-            <Link 
-              href="/products?category=bed" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              • Beds
-            </Link>
-            <Link 
-              href="/about" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            {/* Subcategories list with indentation */}
+            <div className="flex flex-col gap-2 pl-4 text-white/80 text-base">
+              <Link
+                href="/products?category=chairs"
+                className="hover:text-orange-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Chairs
+              </Link>
+              <Link
+                href="/products?category=sofas"
+                className="hover:text-orange-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sofas
+              </Link>
+              <Link
+                href="/products?category=lamps"
+                className="hover:text-orange-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Lamps
+              </Link>
+              <Link
+                href="/products?category=beds"
+                className="hover:text-orange-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Beds
+              </Link>
+            </div>
+            <Link
+              href="/about"
+              className="text-lg font-medium hover:text-orange-400 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               About Us
             </Link>
-            <Link 
-              href="/contact" 
-              className="px-4 py-3 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            <Link
+              href="/contact"
+              className="text-lg font-medium hover:text-orange-400 transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
