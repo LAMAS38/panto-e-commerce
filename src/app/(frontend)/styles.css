@@ -2,11 +2,209 @@
 @tailwind components;
 @tailwind utilities;
 
-/* tes styles globaux custom en dessous */
+/* ==========================================
+   VARIABLES & BASE
+   ========================================== */
 :root {
   color-scheme: light;
+  --animation-duration: 0.3s;
+  --animation-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   @apply bg-white text-gray-900;
+}
+
+/* ==========================================
+   ANIMATIONS KEYFRAMES
+   ========================================== */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* ==========================================
+   CLASSES UTILITAIRES
+   ========================================== */
+
+.animate-fade-in {
+  animation: fade-in 0.6s var(--animation-ease) forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s var(--animation-ease) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s var(--animation-ease) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s var(--animation-ease) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s var(--animation-ease) forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Animation delays */
+.animation-delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.3s var(--animation-ease), 
+              box-shadow 0.3s var(--animation-ease);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Shimmer effect pour loading */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* ==========================================
+   SMOOTH SCROLL & SCROLLBAR
+   ========================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar (desktop only) */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+
+/* Focus visible pour accessibilité */
+*:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Désactiver les animations si l'utilisateur préfère */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
