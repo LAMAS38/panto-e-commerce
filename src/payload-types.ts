@@ -317,16 +317,12 @@ export interface Order {
  */
 export interface Review {
   id: number;
-  name: string;
-  slug: string;
-  role: string;
-  quote: string;
+  product: number | Product;
+  customer: number | Customer;
   rating: number;
+  comment: string;
   featured?: boolean | null;
   published?: boolean | null;
-  background: number | Media;
-  avatar: number | Media;
-  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -596,16 +592,12 @@ export interface OrdersSelect<T extends boolean = true> {
  * via the `definition` "reviews_select".
  */
 export interface ReviewsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  role?: T;
-  quote?: T;
+  product?: T;
+  customer?: T;
   rating?: T;
+  comment?: T;
   featured?: T;
   published?: T;
-  background?: T;
-  avatar?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

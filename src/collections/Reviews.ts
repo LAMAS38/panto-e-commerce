@@ -1,35 +1,54 @@
 import type { CollectionConfig } from 'payload'
 
+/**
+ * Reviews collection configured for product reviews.
+ *
+ * This collection replaces the previous testimonials structure with
+ * fields relevant to product reviews. Each review references a product
+ * and the customer who authored it, stores a numeric rating, and a
+ * comment. The `featured` and `published` flags can be used to
+ * control whether a review appears on the homepage or is visible to
+ * other users. Access rules ensure that only authenticated customers
+ * can create and manage their own reviews, while admins can read and
+ * moderate all content.
+ */
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'rating', 'published', 'featured'],
+    useAsTitle: 'comment',
+    defaultColumns: ['product', 'customer', 'rating', 'published', 'featured'],
   },
   access: {
+    /** Allow everyone to read published reviews */
     read: () => true,
+    /** Only authenticated customers can create a review */
+    create: ({ req }) => req.user?.collection === 'customers',
+    /** Allow a customer to update only their own review */
+    update: ({ req }) => {
+      if (req.user?.collection === 'customers') {
+        return { customer: { equals: req.user.id } }
+      }
+      return false
+    },
+    /** Allow a customer to delete only their own review */
+    delete: ({ req }) => {
+      if (req.user?.collection === 'customers') {
+        return { customer: { equals: req.user.id } }
+      }
+      return false
+    },
   },
   fields: [
     {
-      name: 'name',
-      type: 'text',
+      name: 'product',
+      type: 'relationship',
+      relationTo: 'products',
       required: true,
     },
     {
-      name: 'slug',
-      type: 'text',
-      required: true,
-      unique: true,
-      admin: { position: 'sidebar' },
-    },
-    {
-      name: 'role',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'quote',
-      type: 'textarea',
+      name: 'customer',
+      type: 'relationship',
+      relationTo: 'customers',
       required: true,
     },
     {
@@ -40,39 +59,20 @@ export const Reviews: CollectionConfig = {
       max: 5,
     },
     {
+      name: 'comment',
+      type: 'textarea',
+      required: true,
+    },
+    {
       name: 'featured',
       type: 'checkbox',
-      defaultValue: true,
+      defaultValue: false,
       admin: { position: 'sidebar' },
     },
     {
       name: 'published',
       type: 'checkbox',
       defaultValue: true,
-      admin: { position: 'sidebar' },
-    },
-
-    // ✅ grande image derrière (comme fig1)
-    {
-      name: 'background',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-    },
-
-    // ✅ petit avatar sur la carte
-    {
-      name: 'avatar',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-    },
-
-    // optionnel mais “pro”: pour l’ordre
-    {
-      name: 'order',
-      type: 'number',
-      defaultValue: 0,
       admin: { position: 'sidebar' },
     },
   ],
