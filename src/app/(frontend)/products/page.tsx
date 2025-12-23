@@ -13,19 +13,17 @@ import type { Product } from '@/payload-types'
 import { getProducts } from '@/lib/payload'
 import { Search } from 'lucide-react'
 
-interface ProductsPageProps {
-  searchParams: {
-    category?: string
-    search?: string
-    sort?: string
-    minPrice?: string
-    maxPrice?: string
-    cols?: string
-    featured?: string
-    page?: string
-    viewAll?: string
-  }
-}
+// Note: In Next.js 15 `searchParams` is a dynamic value that resolves
+// asynchronously.  Typing it as a plain object causes type errors at build
+// time because the `PageProps` generic expects a promise-like value.  To
+// avoid these issues we do not statically type `searchParams` here – the
+// page function destructures `searchParams` from the props and awaits it
+// explicitly.  See https://nextjs.org/docs/messages/sync-dynamic-apis for
+// more details about async searchParams.
+
+// We omit a dedicated `ProductsPageProps` interface and accept `searchParams`
+// as `any` in the component signature.  Next.js will still infer the
+// correct runtime type.
 
 // Helper to build query strings while preserving existing parameters.  Any
 // override provided in the `overrides` object will replace the existing
@@ -48,7 +46,7 @@ function buildQuery(baseParams: Record<string, string | undefined>, overrides: R
   return query
 }
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+export default async function ProductsPage({ searchParams }: { searchParams: any }) {
   // Fetch all products from Payload CMS.  You can adjust this call to use
   // your own data access layer / repository if needed.
   const allProducts: Product[] = await getProducts()
