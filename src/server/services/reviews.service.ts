@@ -1,53 +1,52 @@
 import { ReviewsRepo } from '../repositories/reviews.repo'
 import { OrdersRepo } from '../repositories/orders.repo'
 
-/**
- * Service layer for reviews. This layer orchestrates business logic
- * beyond simple database queries—for example verifying that a
- * customer has purchased a product before allowing them to submit a
- * review. By separating these concerns here, pages and route
- * handlers stay lightweight and focused on input and output.
- */
 export class ReviewsService {
   /**
-   * Retrieve published reviews associated with a product.
+   * Créer un review (avec vérification d'achat)
    */
-  static async getReviewsForProduct(productId: string) {
-    return ReviewsRepo.findPublishedByProduct(productId)
-  }
+  static async createReview(data: {
+    customerId: number
+    productId: number
+    name: string
+    rating: number
+    comment: string
+  }) {
+    const { customerId, productId, name, rating, comment } = data
 
-  /**
-   * Retrieve featured, published reviews to display on the homepage.
-   */
-  static async getFeaturedReviews(limit: number = 3) {
-    return ReviewsRepo.getFeatured(limit)
-  }
-
-  /**
-   * Create a new review if the customer has purchased the product.
-   *
-   * @throws Error if the customer has not ordered the product.
-   */
-  static async createReview(
-    customerId: string,
-    productId: string,
-    rating: number,
-    comment: string,
-  ) {
-    // Optional: verify the customer has an order containing the product
-    const orders = await OrdersRepo.findByCustomer(customerId)
-    const purchased = orders.docs?.some((order: any) =>
-      order.items.some((item: any) => item.product?.id === productId),
-    )
-    if (!purchased) {
-      throw new Error('Customer has not purchased this product')
+    // Vérifier si le client a déjà laissé un avis
+    const hasReviewed = await ReviewsRepo.hasReviewed(customerId, productId)
+    if (hasReviewed) {
+      throw new Error('You have already reviewed this product')
     }
-    return ReviewsRepo.createReview({
+
+    // Vérifier si le client a acheté le produit
+    const hasOrdered = await OrdersRepo.hasOrdered(customerId, productId)
+    if (!hasOrdered) {
+      throw new Error('You must purchase this product before reviewing it')
+    }
+
+    // Créer le review
+    return ReviewsRepo.create({
+      name,
       customer: customerId,
       product: productId,
       rating,
       comment,
-      published: false, // default to false until admin approves
     })
+  }
+
+  /**
+   * Récupérer les reviews d'un produit
+   */
+  static async getProductReviews(productId: number) {
+    return ReviewsRepo.findPublishedByProduct(productId)
+  }
+
+  /**
+   * Récupérer les reviews featured pour la home
+   */
+  static async getFeaturedReviews() {
+    return ReviewsRepo.getFeatured(6)
   }
 }

@@ -1,82 +1,84 @@
-import payload from 'payload'
+import { getPayload } from 'payload'
+import config from '@/payload.config'
 
-/**
- * Repository for interacting with the reviews collection. This class
- * encapsulates common queries used across the application when
- * fetching or manipulating review documents. By isolating these
- * queries, other parts of the application remain decoupled from
- * Payload’s API and can be refactored more easily.
- */
 export class ReviewsRepo {
   /**
-   * Find all published reviews associated with a specific product.
-   *
-   * @param productId The ID of the product whose reviews should be returned.
+   * Récupérer tous les reviews publiés d'un produit
    */
-  static async findPublishedByProduct(productId: string) {
-    return await payload.find({
+  static async findPublishedByProduct(productId: number) {
+    const payload = await getPayload({ config })
+    
+    return payload.find({
       collection: 'reviews',
       where: {
-        product: { equals: productId },
-        published: { equals: true },
+        and: [
+          { product: { equals: productId } },
+          { published: { equals: true } },
+        ],
       },
-    })
-  }
-
-  /**
-   * Fetch a limited number of reviews that are both published and
-   * featured. These can be displayed on the home page or other
-   * promotional areas.
-   *
-   * @param limit The maximum number of reviews to return.
-   */
-  static async getFeatured(limit: number = 3) {
-    return await payload.find({
-      collection: 'reviews',
-      where: {
-        featured: { equals: true },
-        published: { equals: true },
-      },
-      limit,
+      depth: 2,
       sort: '-createdAt',
     })
   }
 
   /**
-   * Create a new review document.
-   *
-   * @param data The data used to create the review.
+   * Récupérer les reviews featured pour la homepage
    */
-  static async createReview(data: any) {
-    return await payload.create({
+  static async getFeatured(limit: number = 6) {
+    const payload = await getPayload({ config })
+    
+    return payload.find({
       collection: 'reviews',
-      data,
+      where: {
+        and: [
+          { featured: { equals: true } },
+          { published: { equals: true } },
+        ],
+      },
+      depth: 2,
+      sort: 'order',
+      limit,
     })
   }
 
   /**
-   * Update an existing review document.
-   *
-   * @param id The ID of the review to update.
-   * @param data The fields to update on the review.
+   * Créer un review
    */
-  static async updateReview(id: string, data: any) {
-    return await payload.update({
+  static async create(data: {
+    name: string
+    customer: number
+    product: number
+    rating: number
+    comment: string
+  }) {
+    const payload = await getPayload({ config })
+    
+    return payload.create({
       collection: 'reviews',
-      id,
-      data,
+      data: {
+        ...data,
+        published: false, // Modération par défaut
+      },
     })
   }
 
   /**
-   * Delete a review by its ID.
-   *
-   * @param id The ID of the review to delete.
+   * Vérifier si un customer a déjà reviewé un produit
    */
-  static async deleteReview(id: string) {
-    return await payload.delete({
+  static async hasReviewed(customerId: number, productId: number) {
+    const payload = await getPayload({ config })
+    
+    const result = await payload.find({
       collection: 'reviews',
-      id,
+      where: {
+        and: [
+          { customer: { equals: customerId } },
+          { product: { equals: productId } },
+        ],
+      },
+      limit: 1,
     })
+    
+    return result.docs.length > 0
   }
 }

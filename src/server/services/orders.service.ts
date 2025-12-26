@@ -1,16 +1,17 @@
 import { OrdersRepo } from '../repositories/orders.repo'
 
-/**
- * Service layer for Orders. Encapsulates any business logic around
- * order retrieval. At present it simply proxies calls to the
- * repository, but if you need to add calculations or aggregation
- * (e.g. computing totals, statuses), this is where you can do it.
- */
 export class OrdersService {
   /**
-   * Retrieve all orders belonging to a specific customer.
+   * Récupérer les commandes d'un client
    */
-  static async getOrdersForCustomer(customerId: string) {
+  static async getCustomerOrders(customerId: number) {
     return OrdersRepo.findByCustomer(customerId)
+  }
+
+  /**
+   * Récupérer une commande par ID
+   */
+  static async getOrderById(orderId: number) {
+    return OrdersRepo.findById(orderId)
   }
 }

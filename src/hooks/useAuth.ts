@@ -1,54 +1,88 @@
-"use client";
+'use client'
 
-// This hook provides a simple way to access the current authenticated
-// customer on the client side. It fetches the currently logged-in
-// customer from the Payload authentication endpoint and exposes a
-// `user` object, a `loading` boolean and a `refetch` function to
-// refresh the user state. If the user is not logged in, `user`
-// remains `null`.
+import { useEffect, useState } from 'react'
 
-import { useState, useEffect } from 'react'
-
-export interface Customer {
-  id: string
+type User = {
+  id: number
   email: string
   firstName: string
   lastName: string
-  phone?: string
-  address?: {
-    line1?: string
-    line2?: string
-    city?: string
-    province?: string
-    postalCode?: string
-    country?: string
-  }
-}
+} | null
 
 export function useAuth() {
-  const [user, setUser] = useState<Customer | null>(null)
+  const [user, setUser] = useState<User>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchUser = async () => {
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  const checkAuth = async () => {
     try {
-      const res = await fetch('/api/customers/me', { credentials: 'include' })
-      if (res.ok) {
-        const data = await res.json()
-        setUser(data)
-      } else {
-        setUser(null)
-      }
-    } catch (err) {
+      const res = await fetch('/api/auth/me', {
+        credentials: 'include',
+      })
+      const data = await res.json()
+      setUser(data.user)
+    } catch (error) {
       setUser(null)
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    fetchUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const login = async (email: string, password: string) => {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    })
 
-  return { user, loading, refetch: fetchUser }
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Login failed')
+    }
+
+    const data = await res.json()
+    setUser(data.user)
+    return data
+  }
+
+  const logout = async () => {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
+    })
+    setUser(null)
+  }
+
+  const register = async (data: {
+    email: string
+    password: string
+    firstName: string
+    lastName: string
+  }) => {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+
+    if (!res.ok) {
+      const error = await res.json()
+      throw new Error(error.error || 'Registration failed')
+    }
+
+    return res.json()
+  }
+
+  return {
+    user,
+    loading,
+    login,
+    logout,
+    register,
+    isAuthenticated: !!user,
+  }
 }

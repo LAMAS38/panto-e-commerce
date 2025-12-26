@@ -1,0 +1,13 @@
+import { NextResponse } from 'next/server'
+
+export async function POST() {
+  const response = NextResponse.json({
+    success: true,
+    message: 'Logged out successfully',
+  })
+
+  // Supprimer le cookie
+  response.cookies.delete('payload-token')
+
+  return response
+}

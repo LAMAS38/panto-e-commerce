@@ -61,17 +61,17 @@ export default function TestimonialsCarousel({ testimonials }: Props) {
           {/* Arrows */}
           <button
             onClick={scrollPrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white shadow flex items-center justify-center"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition"
             aria-label="Previous"
           >
-            ‹
+            <span className="text-2xl">‹</span>
           </button>
           <button
             onClick={scrollNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white shadow flex items-center justify-center"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-12 w-12 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-50 transition"
             aria-label="Next"
           >
-            ›
+            <span className="text-2xl">›</span>
           </button>
 
           {/* Carousel */}
@@ -80,7 +80,6 @@ export default function TestimonialsCarousel({ testimonials }: Props) {
               {testimonials.map((review, i) => {
                 const bg = mediaUrl(review.background)
                 const avatar = mediaUrl(review.avatar)
-
                 const rating = Math.max(1, Math.min(5, review.rating ?? 5))
 
                 return (
@@ -125,10 +124,10 @@ export default function TestimonialsCarousel({ testimonials }: Props) {
                         <p className="text-sm text-gray-500">{review.role}</p>
 
                         <p className="mt-4 text-gray-600 text-sm leading-relaxed">
-                          “{review.quote}”
+                          &ldquo;{review.quote}&rdquo;
                         </p>
 
-                        <div className="mt-4 text-orange-500">
+                        <div className="mt-4 text-orange-500 text-lg">
                           {'★'.repeat(rating)}
                           <span className="text-gray-300">
                             {'★'.repeat(5 - rating)}

@@ -142,3 +142,37 @@ export async function getProductsByCategory(categorySlug: string) {
 
   return docs
 }
+
+// Helpers pour Reviews
+export async function getProductReviews(productId: number) {
+  const payload = await getPayloadClient()
+  
+  return payload.find({
+    collection: 'reviews',
+    where: {
+      and: [
+        { product: { equals: productId } },
+        { published: { equals: true } },
+      ],
+    },
+    depth: 2,
+    sort: '-createdAt',
+  })
+}
+
+export async function getFeaturedReviews() {
+  const payload = await getPayloadClient()
+  
+  return payload.find({
+    collection: 'reviews',
+    where: {
+      and: [
+        { featured: { equals: true } },
+        { published: { equals: true } },
+      ],
+    },
+    depth: 2,
+    sort: 'order',
+    limit: 6,
+  })
+}

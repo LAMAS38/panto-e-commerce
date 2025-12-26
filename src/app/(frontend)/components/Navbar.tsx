@@ -1,47 +1,28 @@
-// Modified Navbar to handle safe area on devices with notches (e.g. iPhones)
-// Adds padding to the top of the header to accommodate env(safe-area-inset-top)
-// This file corresponds to src/app/(frontend)/components/Navbar.tsx in the original project.
-
 'use client'
 
 import Link from 'next/link'
-import { ShoppingBag, ChevronDown, Menu, X } from 'lucide-react'
+import { ShoppingBag, ChevronDown, Menu, X, User } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 
 export function Navbar() {
   const { totalItems } = useCart()
+  const { user, isAuthenticated } = useAuth()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    // Apply safe area padding to the top of the navbar for devices with notches
     <header
       style={{ paddingTop: 'env(safe-area-inset-top)' }}
-      // Add relative positioning so that the mobile menu can be absolutely positioned
-      // relative to this header. Without this, the absolute positioning would be
-      // relative to the nearest positioned ancestor (which might not be the header).
       className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 relative"
     >
-      {/*
-        Reduce horizontal padding on small screens to bring icons closer to the edges.
-        We keep wider padding from the md breakpoint onwards to preserve desktop spacing.
-      */}
-      {/*
-        Use max-w-7xl to align the navbar's width with the main page content (e.g. cart, products pages)
-        and reduce horizontal padding on small screens.
-      */}
-      {/*
-        Use a full-width container instead of max-w-7xl so the navbar
-        aligns flush with whatever parent container it sits within (e.g.,
-        cards on the cart page). This avoids visible left/right offsets
-        when the page container has its own max-width smaller than 7xl.
-      */}
       <div className="mx-auto flex w-full items-center justify-between px-2 md:px-4 py-5">
         {/* Logo */}
         <Link href="/" className="text-lg font-semibold text-white hover:text-orange-400 transition-colors">
           Panto
         </Link>
+
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 text-sm text-white/90 md:flex">
           <div
@@ -99,15 +80,27 @@ export function Navbar() {
             Contact
           </Link>
         </nav>
-        {/*
-          Right side container: set a minimum width so that the
-          overall width of the cart + menu buttons remains stable even
-          when the cart badge is shown. Without this, the presence of a
-          badge can change the group’s width and visually shift the
-          navbar contents left or right on mobile. We calculate
-          min-w-[88px]: two 40px buttons plus ~8px gap.
-        */}
-        <div className="flex items-center gap-4 min-w-[88px]">
+
+        {/* Right Side Actions */}
+        <div className="flex items-center gap-2">
+          {/* Account Button (Desktop) */}
+          {isAuthenticated ? (
+            <Link
+              href="/account"
+              className="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur hover:bg-white/20 transition-colors"
+              aria-label="Account"
+            >
+              <User className="h-5 w-5" />
+            </Link>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors text-sm font-medium"
+            >
+              Log In
+            </Link>
+          )}
+
           {/* Cart */}
           <Link
             href="/cart"
@@ -121,6 +114,7 @@ export function Navbar() {
               </span>
             )}
           </Link>
+
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -131,13 +125,31 @@ export function Navbar() {
           </button>
         </div>
       </div>
+
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div
-          // Position the mobile menu directly below the navbar and let it fill the remaining viewport height.
-          className="md:hidden absolute inset-x-0 top-full border-t border-white/10 bg-black/95 backdrop-blur-sm"
-        >
+        <div className="md:hidden absolute inset-x-0 top-full border-t border-white/10 bg-black/95 backdrop-blur-sm">
           <nav className="flex flex-col gap-4 px-6 py-8 text-white">
+            {/* Account Link (Mobile) */}
+            {isAuthenticated ? (
+              <Link
+                href="/account"
+                className="text-lg font-medium hover:text-orange-400 transition-colors flex items-center gap-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <User className="h-5 w-5" />
+                My Account
+              </Link>
+            ) : (
+              <Link
+                href="/auth/login"
+                className="text-lg font-medium hover:text-orange-400 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Log In
+              </Link>
+            )}
+
             <Link
               href="/products"
               className="text-lg font-medium hover:text-orange-400 transition-colors"
@@ -145,7 +157,8 @@ export function Navbar() {
             >
               Shop
             </Link>
-            {/* Subcategories list with indentation */}
+
+            {/* Subcategories */}
             <div className="flex flex-col gap-2 pl-4 text-white/80 text-base">
               <Link
                 href="/products?category=chairs"
@@ -176,6 +189,7 @@ export function Navbar() {
                 Beds
               </Link>
             </div>
+
             <Link
               href="/about"
               className="text-lg font-medium hover:text-orange-400 transition-colors"

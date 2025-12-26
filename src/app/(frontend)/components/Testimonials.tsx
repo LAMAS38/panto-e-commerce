@@ -7,7 +7,10 @@ export async function Testimonials() {
   const { docs } = await payload.find({
     collection: 'reviews',
     where: {
-      and: [{ published: { equals: true } }, { featured: { equals: true } }],
+      and: [
+        { published: { equals: true } },
+        { featured: { equals: true } },
+      ],
     },
     sort: 'order',
     limit: 6,

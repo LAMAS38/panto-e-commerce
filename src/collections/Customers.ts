@@ -11,7 +11,9 @@ export const Customers: CollectionConfig = {
       // admins can read all
       if (req.user?.collection === 'users') return true
       // customers can read themselves
-      if (req.user?.collection === 'customers') return true
+      if (req.user?.collection === 'customers') {
+        return { id: { equals: req.user.id } }
+      }
       return false
     },
   },

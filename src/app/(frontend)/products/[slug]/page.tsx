@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation'
 import { getProductBySlug } from '@/lib/payload'
 import ProductDetailClient from './ProductDetailClient'
 import type { Metadata } from 'next'
-
+import ReviewForm from './components/ReviewForm'
+import ReviewsList from './components/ReviewsList'
+import { ReviewsService } from '@/server/services/reviews.service' 
 interface ProductPageProps {
   params: Promise<{ slug: string }>
 }
@@ -57,9 +59,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound()
   }
 
+  // Récupérer les reviews du produit
+  const reviewsResult = await ReviewsService.getProductReviews(product.id)
+  const reviews = reviewsResult.docs
+
   return (
     <div className="min-h-screen bg-zinc-50">
       <ProductDetailClient product={product} />
+
+      {/* Section Reviews */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Reviews List */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Customer Reviews
+            </h2>
+            <ReviewsList reviews={reviews} />
+          </div>
+
+          {/* Review Form */}
+          <div>
+            <ReviewForm productId={product.id} productSlug={product.slug} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

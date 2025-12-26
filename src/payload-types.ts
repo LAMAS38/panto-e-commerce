@@ -317,12 +317,55 @@ export interface Order {
  */
 export interface Review {
   id: number;
-  product: number | Product;
-  customer: number | Customer;
+  /**
+   * Nom affiché (ex: "Sofia R.")
+   */
+  name: string;
+  /**
+   * Profession du client (optionnel, pour testimonials)
+   */
+  role?: string | null;
+  /**
+   * Slug unique (généré automatiquement)
+   */
+  slug?: string | null;
+  /**
+   * Citation courte (pour testimonials)
+   */
+  quote?: string | null;
+  /**
+   * Image de fond (pour testimonials)
+   */
+  background?: (number | null) | Media;
+  /**
+   * Photo du client (pour testimonials)
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Produit évalué (optionnel si testimonial général)
+   */
+  product?: (number | null) | Product;
+  /**
+   * Client qui a laissé l'avis
+   */
+  customer?: (number | null) | Customer;
+  /**
+   * Commentaire détaillé (pour product reviews)
+   */
+  comment?: string | null;
   rating: number;
-  comment: string;
+  /**
+   * Afficher sur la homepage ?
+   */
   featured?: boolean | null;
+  /**
+   * Visible publiquement ?
+   */
   published?: boolean | null;
+  /**
+   * Ordre d'affichage sur la home
+   */
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -592,12 +635,19 @@ export interface OrdersSelect<T extends boolean = true> {
  * via the `definition` "reviews_select".
  */
 export interface ReviewsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  slug?: T;
+  quote?: T;
+  background?: T;
+  avatar?: T;
   product?: T;
   customer?: T;
-  rating?: T;
   comment?: T;
+  rating?: T;
   featured?: T;
   published?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
